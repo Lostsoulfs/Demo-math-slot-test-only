@@ -10,12 +10,12 @@
 // =====================================================================
 
 import { Container, Sprite, Graphics, BlurFilter } from 'pixi.js';
-import { GRID, SPIN, SYMBOLS, SYMBOL_WEIGHTS } from './config.js';
+import { GRID, SPIN, SYMBOLS, SYMBOL_WEIGHTS, TIME } from './config.js';
 
 const CELL = GRID.symbolSize + GRID.gap;
 const ROWS = GRID.rows;
-const NSLOTS = ROWS + 2;          // visible rows + 2 buffers
-const Y0 = ROWS * CELL;           // anchor so slots 1..ROWS are visible
+const NSLOTS = ROWS + 2; // visible rows + 2 buffers
+const Y0 = ROWS * CELL; // anchor so slots 1..ROWS are visible
 const STRIP_LEN = 64;
 
 const SPINNABLE = SYMBOLS.filter((s) => s.id !== 'coin').map((s) => s.id);
@@ -36,7 +36,8 @@ function weightedRandom(pool = ALL_IDS) {
 const mod = (n, m) => ((n % m) + m) % m;
 // easeOutBack — overshoots then settles, giving the reel-stop bounce
 function easeOutBack(t) {
-  const c1 = 1.70158, c3 = c1 + 1;
+  const c1 = 1.70158,
+    c3 = c1 + 1;
   return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
 }
 
@@ -50,7 +51,7 @@ class Reel {
     this.strip = Array.from({ length: STRIP_LEN }, () => weightedRandom());
     this.pos = 0;
     this.speed = 0;
-    this.mode = 'idle';        // idle | accel | spin | stopping
+    this.mode = 'idle'; // idle | accel | spin | stopping
     this.maxSpeed = 30;
 
     this.blur = new BlurFilter({ strength: 0, quality: 2 });
@@ -97,14 +98,18 @@ class Reel {
   }
 
   _beginStopping() {
-    const out = this._pendingOutcome || [weightedRandom(SPINNABLE), weightedRandom(SPINNABLE), weightedRandom(SPINNABLE)];
+    const out = this._pendingOutcome || [
+      weightedRandom(SPINNABLE),
+      weightedRandom(SPINNABLE),
+      weightedRandom(SPINNABLE),
+    ];
     const travel = 6 + this.index * 1.5 + Math.random() * 2;
     const target = Math.ceil(this.pos + travel);
     // at integer target: slot ROWS shows strip[target+ROWS] (top visible),
     // slot ROWS-1 -> mid, slot ROWS-2 -> bottom.
-    this.strip[mod(target + ROWS, STRIP_LEN)] = out[0];      // top
-    this.strip[mod(target + ROWS - 1, STRIP_LEN)] = out[1];  // mid
-    this.strip[mod(target + ROWS - 2, STRIP_LEN)] = out[2];  // bottom
+    this.strip[mod(target + ROWS, STRIP_LEN)] = out[0]; // top
+    this.strip[mod(target + ROWS - 1, STRIP_LEN)] = out[1]; // mid
+    this.strip[mod(target + ROWS - 2, STRIP_LEN)] = out[2]; // bottom
     // fill the approach with filler so neighbours look natural
     for (let k = 1; k <= 4; k++) this.strip[mod(target + ROWS + k, STRIP_LEN)] = weightedRandom();
     this.stopFrom = this.pos;
@@ -147,9 +152,7 @@ class Reel {
     }
     // motion blur tied to current speed
     const blurAmt = (this.speed / this.maxSpeed) * SPIN.maxBlur;
-    this.blur.blurY = this.mode === 'stopping'
-      ? Math.max(0, blurAmt * (1 - this.stopT))
-      : blurAmt;
+    this.blur.blurY = this.mode === 'stopping' ? Math.max(0, blurAmt * (1 - this.stopT)) : blurAmt;
     this._render();
   }
 
@@ -201,7 +204,7 @@ export class ReelSet {
   }
 
   update(ticker) {
-    const dt = Math.min(0.05, ticker.deltaMS / 1000);
+    const dt = Math.min(0.05, ticker.deltaMS / 1000) * TIME.scale;
     for (const r of this.reels) r.update(dt);
   }
 

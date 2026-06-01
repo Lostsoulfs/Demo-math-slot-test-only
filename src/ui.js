@@ -27,17 +27,28 @@ class Button extends Container {
     super();
     this.eventMode = 'static';
     this.cursor = 'pointer';
-    this._w = w; this._h = h; this._radius = radius;
-    this._fill = fill; this._stroke = stroke;
+    this._w = w;
+    this._h = h;
+    this._radius = radius;
+    this._fill = fill;
+    this._stroke = stroke;
     this.bg = new Graphics();
     this.addChild(this.bg);
     this._draw(1);
     if (glow) {
-      this.filters = [new GlowFilter({ color: glow, distance: 16, outerStrength: 2, quality: 0.2 })];
+      this.filters = [
+        new GlowFilter({ color: glow, distance: 16, outerStrength: 2, quality: 0.2 }),
+      ];
     }
-    this.on('pointerdown', () => { this.scale.set(0.94); });
-    this.on('pointerup', () => { this.scale.set(1); });
-    this.on('pointerupoutside', () => { this.scale.set(1); });
+    this.on('pointerdown', () => {
+      this.scale.set(0.94);
+    });
+    this.on('pointerup', () => {
+      this.scale.set(1);
+    });
+    this.on('pointerupoutside', () => {
+      this.scale.set(1);
+    });
     this.on('pointertap', () => {
       audio.uiClick();
       if (!this.disabledState && onTap) onTap();
@@ -46,7 +57,8 @@ class Button extends Container {
   }
   _draw(alpha = 1) {
     this.bg.clear();
-    this.bg.roundRect(0, 0, this._w, this._h, this._radius)
+    this.bg
+      .roundRect(0, 0, this._w, this._h, this._radius)
       .fill({ color: this._fill, alpha })
       .stroke({ color: this._stroke, width: 4, alpha });
   }
@@ -69,20 +81,26 @@ export class UI {
     this._buildPanel();
   }
 
-  get bet() { return ECONOMY.betLevels[this.betIndex]; }
+  get bet() {
+    return ECONOMY.betLevels[this.betIndex];
+  }
 
   _buildTitle() {
     const t = label('COINS: HOLD & WIN', 46, COLORS.frameGold, '900');
     t.anchor.set(0.5);
     t.position.set(DESIGN.width / 2, 60);
-    t.filters = [new GlowFilter({ color: COLORS.coin, distance: 14, outerStrength: 2, quality: 0.2 })];
+    t.filters = [
+      new GlowFilter({ color: COLORS.coin, distance: 14, outerStrength: 2, quality: 0.2 }),
+    ];
     this.root.addChild(t);
   }
 
   _buildJackpotLadder() {
     this.jackpotChips = {};
     const order = JACKPOT_ORDER;
-    const chipW = 240, chipH = 64, gap = 16;
+    const chipW = 240,
+      chipH = 64,
+      gap = 16;
     const totalW = order.length * chipW + (order.length - 1) * gap;
     let x = (DESIGN.width - totalW) / 2;
     const y = 140;
@@ -94,12 +112,16 @@ export class UI {
         .fill({ color: 0x0a1330 })
         .stroke({ color: jp.color, width: 3 });
       const name = label(kind, 22, jp.color, '900');
-      name.anchor.set(0, 0.5); name.position.set(16, chipH / 2);
+      name.anchor.set(0, 0.5);
+      name.position.set(16, chipH / 2);
       const val = label('', 26, COLORS.textWhite, '800');
-      val.anchor.set(1, 0.5); val.position.set(chipW - 16, chipH / 2);
+      val.anchor.set(1, 0.5);
+      val.position.set(chipW - 16, chipH / 2);
       chip.addChild(g, name, val);
       chip.position.set(x, y);
-      chip.filters = [new GlowFilter({ color: jp.color, distance: 8, outerStrength: 1, quality: 0.15 })];
+      chip.filters = [
+        new GlowFilter({ color: jp.color, distance: 8, outerStrength: 1, quality: 0.15 }),
+      ];
       this.root.addChild(chip);
       this.jackpotChips[kind] = { val, chip };
       x += chipW + gap;
@@ -107,7 +129,7 @@ export class UI {
   }
 
   _buildPanel() {
-    const ctrlY = 1120;     // main controls row
+    const ctrlY = 1120; // main controls row
 
     // balance + win readouts (bottom corners, clear of controls)
     this.balanceText = label('', 30, COLORS.textWhite, '800');
@@ -122,13 +144,17 @@ export class UI {
 
     // SPIN button (center)
     this.spinBtn = new Button({
-      w: 210, h: 210, radius: 105,
-      fill: COLORS.frameGoldDark, stroke: COLORS.frameGold,
+      w: 210,
+      h: 210,
+      radius: 105,
+      fill: COLORS.frameGoldDark,
+      stroke: COLORS.frameGold,
       glow: COLORS.coin,
       onTap: () => this.handlers.onSpin(),
     });
     const spinLabel = label('SPIN', 42, COLORS.textWhite, '900');
-    spinLabel.anchor.set(0.5); spinLabel.position.set(105, 105);
+    spinLabel.anchor.set(0.5);
+    spinLabel.position.set(105, 105);
     this.spinBtn.addChild(spinLabel);
     this.spinBtn.position.set(DESIGN.width / 2, ctrlY);
     this.root.addChild(this.spinBtn);
@@ -142,7 +168,8 @@ export class UI {
     this.betValueText.anchor.set(0.5);
     this.betValueText.position.set(215, ctrlY - 95);
     const betCap = label('BET', 22, COLORS.textWhite, '700');
-    betCap.anchor.set(0.5); betCap.position.set(215, ctrlY - 135);
+    betCap.anchor.set(0.5);
+    betCap.position.set(215, ctrlY - 135);
     this.root.addChild(this.betMinus, this.betPlus, this.betValueText, betCap);
 
     // AUTO + SOUND (right cluster, stacked)
@@ -156,17 +183,33 @@ export class UI {
   }
 
   _smallBtn(txt, onTap) {
-    const b = new Button({ w: 90, h: 90, radius: 20, fill: 0x16306e, stroke: COLORS.frameGold, onTap });
+    const b = new Button({
+      w: 90,
+      h: 90,
+      radius: 20,
+      fill: 0x16306e,
+      stroke: COLORS.frameGold,
+      onTap,
+    });
     const t = label(txt, 44, COLORS.textWhite, '900');
-    t.anchor.set(0.5); t.position.set(45, 42);
+    t.anchor.set(0.5);
+    t.position.set(45, 42);
     b.addChild(t);
     return b;
   }
 
   _wideBtn(txt, onTap) {
-    const b = new Button({ w: 200, h: 56, radius: 16, fill: 0x16306e, stroke: COLORS.frameGold, onTap });
+    const b = new Button({
+      w: 200,
+      h: 56,
+      radius: 16,
+      fill: 0x16306e,
+      stroke: COLORS.frameGold,
+      onTap,
+    });
     const t = label(txt, 26, COLORS.textWhite, '800');
-    t.anchor.set(0.5); t.position.set(100, 28);
+    t.anchor.set(0.5);
+    t.position.set(100, 28);
     b.addChild(t);
     b._label = t;
     return b;
@@ -191,8 +234,13 @@ export class UI {
     this.muteBtn.alpha = muted ? 0.6 : 1;
   }
 
-  setBalance(v) { this._balance = v; this.balanceText.text = `BALANCE  ${fmt(v)}`; }
-  setWin(v) { this.winText.text = v > 0 ? `WIN  ${fmt(v)}` : ''; }
+  setBalance(v) {
+    this._balance = v;
+    this.balanceText.text = `BALANCE  ${fmt(v)}`;
+  }
+  setWin(v) {
+    this.winText.text = v > 0 ? `WIN  ${fmt(v)}` : '';
+  }
 
   setSpinEnabled(enabled) {
     this.spinBtn.setDisabled(!enabled);
@@ -213,7 +261,10 @@ export class UI {
     let f = 0;
     const id = setInterval(() => {
       chip.alpha = chip.alpha === 1 ? 0.3 : 1;
-      if (++f > 8) { clearInterval(id); chip.alpha = 1; }
+      if (++f > 8) {
+        clearInterval(id);
+        chip.alpha = 1;
+      }
     }, 90);
   }
 }

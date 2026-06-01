@@ -30,7 +30,9 @@ class AudioEngine {
     if (this.master) this.master.gain.value = m ? 0 : 0.5;
   }
 
-  _now() { return this.ctx.currentTime; }
+  _now() {
+    return this.ctx.currentTime;
+  }
 
   // --- one-shot tone helper ---
   _blip(freq, dur, type = 'sine', gain = 0.3, when = 0, glideTo = null) {
@@ -69,7 +71,9 @@ class AudioEngine {
     const g = this.ctx.createGain();
     g.gain.setValueAtTime(0.0001, t);
     g.gain.linearRampToValueAtTime(0.12, t + 0.15);
-    noise.connect(bp); bp.connect(g); g.connect(this.master);
+    noise.connect(bp);
+    bp.connect(g);
+    g.connect(this.master);
     noise.start(t);
     this._spinNodes = { noise, g };
   }
@@ -119,7 +123,8 @@ class AudioEngine {
 
   bonusTrigger() {
     [0, 0.1, 0.2, 0.34].forEach((d, i) =>
-      this._blip(330 * (1 + i * 0.5), 0.3, 'sawtooth', 0.24, d, 660 * (1 + i * 0.4)));
+      this._blip(330 * (1 + i * 0.5), 0.3, 'sawtooth', 0.24, d, 660 * (1 + i * 0.4)),
+    );
   }
 
   uiClick() {

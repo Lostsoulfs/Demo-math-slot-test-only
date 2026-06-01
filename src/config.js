@@ -14,8 +14,8 @@ export const DESIGN = {
 export const GRID = {
   reels: 3,
   rows: 3,
-  symbolSize: 200,     // px of one cell at design resolution
-  gap: 14,             // gap between cells
+  symbolSize: 200, // px of one cell at design resolution
+  gap: 14, // gap between cells
   // top-left of the reel viewport (well is 3*214=642 wide, centred on 1080)
   x: 219,
   y: 320,
@@ -44,14 +44,14 @@ export const COLORS = {
 // id, label, kind, base color used by the procedural renderer.
 // "coin" is the bonus symbol that drives Hold & Win.
 export const SYMBOLS = [
-  { id: 'cherry',     kind: 'fruit',  color: 0xe23b4e, tier: 1 },
-  { id: 'lemon',      kind: 'fruit',  color: 0xf6d033, tier: 1 },
-  { id: 'plum',       kind: 'fruit',  color: 0x9b59c9, tier: 1 },
-  { id: 'watermelon', kind: 'fruit',  color: 0x2ecc71, tier: 2 },
-  { id: 'bell',       kind: 'bell',   color: 0xffc93c, tier: 3 },
-  { id: 'bar',        kind: 'bar',    color: 0xf2f2f2, tier: 4 },
-  { id: 'seven',      kind: 'seven',  color: 0xff3b3b, tier: 5 },
-  { id: 'coin',       kind: 'coin',   color: 0xffcf3f, tier: 0 }, // bonus
+  { id: 'cherry', kind: 'fruit', color: 0xe23b4e, tier: 1 },
+  { id: 'lemon', kind: 'fruit', color: 0xf6d033, tier: 1 },
+  { id: 'plum', kind: 'fruit', color: 0x9b59c9, tier: 1 },
+  { id: 'watermelon', kind: 'fruit', color: 0x2ecc71, tier: 2 },
+  { id: 'bell', kind: 'bell', color: 0xffc93c, tier: 3 },
+  { id: 'bar', kind: 'bar', color: 0xf2f2f2, tier: 4 },
+  { id: 'seven', kind: 'seven', color: 0xff3b3b, tier: 5 },
+  { id: 'coin', kind: 'coin', color: 0xffcf3f, tier: 0 }, // bonus
 ];
 
 // Reel strip weighting — higher weight = more common. Coin is rare.
@@ -63,7 +63,7 @@ export const SYMBOL_WEIGHTS = {
   bell: 13,
   bar: 9,
   seven: 6,
-  coin: 7,            // tuned so 6+ coin bonus triggers occasionally
+  coin: 7, // tuned so 6+ coin bonus triggers occasionally
 };
 
 // ---- Paylines over the 3x3 grid (row indices per reel column) ----
@@ -89,8 +89,8 @@ export const PAYTABLE = {
 
 // ---- Hold & Win bonus ----
 export const BONUS = {
-  triggerCount: 6,     // coins needed on the board to start the bonus
-  respins: 3,          // respins reset to this each time a new coin lands
+  triggerCount: 6, // coins needed on the board to start the bonus
+  respins: 3, // respins reset to this each time a new coin lands
   // coin cash values (x bet) used to fill landed coins
   coinValues: [1, 2, 3, 5, 8, 10, 15, 20, 25],
   coinValueWeights: [22, 20, 16, 12, 10, 8, 6, 4, 2],
@@ -98,9 +98,9 @@ export const BONUS = {
 
 // ---- Jackpots (x bet). GRAND awarded when all 9 cells fill with coins ----
 export const JACKPOTS = {
-  MINI:  { mult: 20,   color: COLORS.jackpotMini },
-  MINOR: { mult: 50,   color: COLORS.jackpotMinor },
-  MAJOR: { mult: 200,  color: COLORS.jackpotMajor },
+  MINI: { mult: 20, color: COLORS.jackpotMini },
+  MINOR: { mult: 50, color: COLORS.jackpotMinor },
+  MAJOR: { mult: 200, color: COLORS.jackpotMajor },
   GRAND: { mult: 1000, color: COLORS.jackpotGrand },
 };
 export const JACKPOT_ORDER = ['MINI', 'MINOR', 'MAJOR', 'GRAND'];
@@ -114,12 +114,12 @@ export const ECONOMY = {
 
 // ---- Spin timing / feel ----
 export const SPIN = {
-  reelStaggerMs: 260,    // delay between each reel starting to stop
-  minSpinMs: 900,        // shortest spin before reels begin stopping
-  maxBlur: 14,           // motion blur at full speed
-  bounceOvershoot: 26,   // px overshoot for the stop bounce
-  autoSpinDelayMs: 900,  // pause between auto spins
-  idleToAttractMs: 12000,// idle time before attract/auto mode kicks in
+  reelStaggerMs: 260, // delay between each reel starting to stop
+  minSpinMs: 900, // shortest spin before reels begin stopping
+  maxBlur: 14, // motion blur at full speed
+  bounceOvershoot: 26, // px overshoot for the stop bounce
+  autoSpinDelayMs: 900, // pause between auto spins
+  idleToAttractMs: 12000, // idle time before attract/auto mode kicks in
 };
 
 // ---- "Big win" celebration thresholds (x bet) ----
@@ -129,10 +129,13 @@ export const BIGWIN = {
   epic: 100,
 };
 
+// ---- Global time scale (debug slow-mo). 1 = normal. ----
+export const TIME = { scale: 1 };
+
 // ---- Demo tuning (this is a show-piece, so keep the action lively) ----
 export const DEMO = {
-  bonusChance: 0.05,   // chance a spin is forced into a Hold & Win trigger
-  winChance: 0.42,     // chance a non-bonus spin is nudged to a line win
+  bonusChance: 0.05, // chance a spin is forced into a Hold & Win trigger
+  winChance: 0.42, // chance a non-bonus spin is nudged to a line win
 };
 
 // ---- Visual quality (drop these if any frame dips) ----
@@ -143,3 +146,47 @@ export const QUALITY = {
   shakeIntensity: 14,
   godrays: true,
 };
+
+// ---- Theme presets (live-switchable via the debug panel) ----
+// Each preset overrides keys on COLORS, then the scene repaints the
+// background gradient, reel frame, godrays and glow accents. Baked symbol
+// art is unchanged (full symbol reskin is a separate task).
+export const THEMES = {
+  classic: {
+    bgTop: 0x12306e,
+    bgBottom: 0x04081c,
+    frameGold: 0xffd25a,
+    frameGoldDark: 0xb8841f,
+    coin: 0xffcf3f,
+    win: 0xffe14d,
+    ray: 0x4f7bd6,
+  },
+  neon: {
+    bgTop: 0x1a0b3d,
+    bgBottom: 0x05010f,
+    frameGold: 0x36f0ff,
+    frameGoldDark: 0xb02bff,
+    coin: 0xff36c4,
+    win: 0x4dfff0,
+    ray: 0xb02bff,
+  },
+  mystical: {
+    bgTop: 0x14324a,
+    bgBottom: 0x050b16,
+    frameGold: 0xffe08a,
+    frameGoldDark: 0x3fae9c,
+    coin: 0x6fe3c8,
+    win: 0xffe08a,
+    ray: 0x2f7d8a,
+  },
+  sunset: {
+    bgTop: 0x6e1f3a,
+    bgBottom: 0x1a0610,
+    frameGold: 0xffd25a,
+    frameGoldDark: 0xd1552a,
+    coin: 0xff8a3c,
+    win: 0xffd25a,
+    ray: 0xff6a4f,
+  },
+};
+export const THEME_NAMES = Object.keys(THEMES);

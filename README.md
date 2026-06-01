@@ -13,6 +13,24 @@ A flashy, **buttery-smooth** Playson-style 3×3 slot machine, built with **PixiJ
 
 > Pure entertainment demo — play money only, no real wagering.
 
+## 🕹️ Test it yourself
+
+**Play it live (no install):** every push auto-deploys to GitHub Pages →
+**https://lostsoulfs.github.io/replit-code/**
+_One-time setup:_ in the repo go to **Settings → Pages → Source: "GitHub Actions"**.
+(If Pages isn't available on the repo's plan, the build is also attached as a
+downloadable artifact on each Actions run.)
+
+**Dev / debug panel:** add `?debug=1` to the URL (works on the live site too) or
+press the **backtick (`` ` ``)** key. You get:
+
+- an **FPS / ms** meter (top-left), and
+- a tweak panel with buttons to **Force WIN / BIG / MEGA / EPIC / BONUS** on demand,
+  plus live sliders for symbol weights, spin speed, slow-mo, odds, particle/glow/shake
+  quality, balance/bet, and a **theme switcher**.
+
+So you can trigger and inspect every visual state instantly instead of waiting on RNG.
+
 ## Run it
 
 ```bash
@@ -35,18 +53,28 @@ paylines, jackpots, bet levels, spin timing, demo win/bonus frequency, and a
 
 ## Project layout
 
-| File | Role |
-| --- | --- |
-| `src/main.js` | Boot, scene, game state machine, auto-spin/attract |
-| `src/reels.js` | Reel engine (deterministic strip-overwrite + motion blur) |
-| `src/symbols.js` | Procedural glossy symbol textures |
-| `src/wins.js` | Payline evaluation |
-| `src/outcome.js` | Weighted spin-result generator (with demo nudges) |
-| `src/holdAndWin.js` | The Hold & Win bonus showpiece |
-| `src/effects.js` | Particle bursts, glow pulses, screen shake |
-| `src/ui.js` | HUD: balance, bet, SPIN/AUTO/SOUND, jackpot ladder |
-| `src/audio.js` | Procedural WebAudio SFX |
-| `verify.mjs` | Headless Playwright smoke test + screenshots |
+| File                | Role                                                      |
+| ------------------- | --------------------------------------------------------- |
+| `src/main.js`       | Boot, scene, game state machine, auto-spin/attract        |
+| `src/reels.js`      | Reel engine (deterministic strip-overwrite + motion blur) |
+| `src/symbols.js`    | Procedural glossy symbol textures                         |
+| `src/wins.js`       | Payline evaluation                                        |
+| `src/outcome.js`    | Weighted spin-result generator (with demo nudges)         |
+| `src/holdAndWin.js` | The Hold & Win bonus showpiece                            |
+| `src/effects.js`    | Particle bursts, glow pulses, screen shake                |
+| `src/ui.js`         | HUD: balance, bet, SPIN/AUTO/SOUND, jackpot ladder        |
+| `src/audio.js`      | Procedural WebAudio SFX                                   |
+| `src/debug.js`      | In-app dev panel (lil-gui) + FPS meter, lazy-loaded       |
+| `verify.mjs`        | Headless Playwright smoke test + screenshots              |
+
+## Develop (read & edit locally)
+
+Open in VS Code — `.vscode/` recommends ESLint + Prettier and enables format-on-save.
+
+```bash
+npm run lint           # eslint
+npm run format         # prettier --write
+```
 
 ## Verify
 

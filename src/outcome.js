@@ -8,7 +8,6 @@ import { SYMBOLS, SYMBOL_WEIGHTS, PAYLINES, BONUS, DEMO } from './config.js';
 import { randInt } from './utils.js';
 
 const SPINNABLE = SYMBOLS.filter((s) => s.id !== 'coin').map((s) => s.id);
-const ALL = SYMBOLS.map((s) => s.id);
 
 function weighted(pool) {
   let total = 0;
@@ -38,7 +37,8 @@ export function generateOutcome() {
       [cells[i], cells[j]] = [cells[j], cells[i]];
     }
     const coinCount = randInt(BONUS.triggerCount, 8);
-    for (let reel = 0; reel < 3; reel++) for (let row = 0; row < 3; row++) grid[reel][row] = weighted(SPINNABLE);
+    for (let reel = 0; reel < 3; reel++)
+      for (let row = 0; row < 3; row++) grid[reel][row] = weighted(SPINNABLE);
     for (let i = 0; i < coinCount; i++) {
       const [reel, row] = cells[i];
       grid[reel][row] = 'coin';
@@ -59,10 +59,13 @@ export function generateOutcome() {
   if (Math.random() < DEMO.winChance) {
     const line = PAYLINES[randInt(0, PAYLINES.length - 1)];
     // favour lower tiers (more common, smaller wins) most of the time
-    const sym = Math.random() < 0.8
-      ? weighted(['cherry', 'lemon', 'plum', 'watermelon', 'bell'])
-      : weighted(['bar', 'seven']);
-    line.forEach((row, reel) => { grid[reel][row] = sym; });
+    const sym =
+      Math.random() < 0.8
+        ? weighted(['cherry', 'lemon', 'plum', 'watermelon', 'bell'])
+        : weighted(['bar', 'seven']);
+    line.forEach((row, reel) => {
+      grid[reel][row] = sym;
+    });
   }
 
   // guard: never accidentally trigger the bonus on a normal spin
@@ -70,7 +73,10 @@ export function generateOutcome() {
   const coinPos = [];
   for (let reel = 0; reel < 3; reel++)
     for (let row = 0; row < 3; row++)
-      if (grid[reel][row] === 'coin') { coins++; coinPos.push([reel, row]); }
+      if (grid[reel][row] === 'coin') {
+        coins++;
+        coinPos.push([reel, row]);
+      }
   while (coins >= BONUS.triggerCount) {
     const [reel, row] = coinPos.pop();
     grid[reel][row] = weighted(SPINNABLE);

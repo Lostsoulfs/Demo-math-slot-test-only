@@ -5,7 +5,7 @@
 
 import { Container, Sprite, Graphics, Rectangle } from 'pixi.js';
 import { GlowFilter } from 'pixi-filters';
-import { QUALITY, COLORS } from './config.js';
+import { QUALITY, COLORS, TIME } from './config.js';
 import { rand, tween, Ease } from './utils.js';
 
 // one tiny soft-dot texture reused by every particle
@@ -13,7 +13,11 @@ function makeDotTexture(renderer) {
   const g = new Graphics();
   g.circle(16, 16, 14).fill({ color: 0xffffff });
   g.circle(16, 16, 14).stroke({ color: 0xffffff, alpha: 0.4, width: 4 });
-  const tex = renderer.generateTexture({ target: g, resolution: 1, frame: new Rectangle(0, 0, 32, 32) });
+  const tex = renderer.generateTexture({
+    target: g,
+    resolution: 1,
+    frame: new Rectangle(0, 0, 32, 32),
+  });
   g.destroy();
   return tex;
 }
@@ -43,13 +47,17 @@ export class Effects {
   }
 
   burst(x, y, opts = {}) {
-    const n = Math.min(opts.count || QUALITY.particlesPerBurst, QUALITY.maxParticles - this.particles.length);
+    const n = Math.min(
+      opts.count || QUALITY.particlesPerBurst,
+      QUALITY.maxParticles - this.particles.length,
+    );
     const colors = opts.colors || [COLORS.coin, 0xfff2b0, COLORS.win, 0xffffff];
     for (let i = 0; i < n; i++) {
       const p = this._spawn();
       const ang = rand(0, Math.PI * 2);
       const spd = rand(opts.minSpeed || 120, opts.maxSpeed || 420);
-      p.x = x; p.y = y;
+      p.x = x;
+      p.y = y;
       p.tint = colors[(Math.random() * colors.length) | 0];
       p.alpha = 1;
       const sc = rand(0.3, 0.9) * (opts.scale || 1);
@@ -71,7 +79,7 @@ export class Effects {
   }
 
   _update(ticker) {
-    const dt = Math.min(0.05, ticker.deltaMS / 1000);
+    const dt = Math.min(0.05, ticker.deltaMS / 1000) * TIME.scale;
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const pt = this.particles[i];
       pt.life += dt;
@@ -124,10 +132,14 @@ export class Effects {
     const prev = obj.filters || [];
     obj.filters = Array.isArray(prev) ? [...prev, glow] : [prev, glow];
     for (let r = 0; r < repeat; r++) {
-      await tween(ms / repeat, (t) => {
-        const v = Math.sin(t * Math.PI);
-        glow.outerStrength = v * 4;
-      }, Ease.linear);
+      await tween(
+        ms / repeat,
+        (t) => {
+          const v = Math.sin(t * Math.PI);
+          glow.outerStrength = v * 4;
+        },
+        Ease.linear,
+      );
     }
     obj.filters = prev;
   }

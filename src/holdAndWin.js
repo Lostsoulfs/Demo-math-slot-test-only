@@ -18,7 +18,10 @@ function txt(text, size, fill, weight = '900') {
     text,
     style: new TextStyle({
       fontFamily: 'Arial Black, Arial, sans-serif',
-      fontSize: size, fontWeight: weight, fill, align: 'center',
+      fontSize: size,
+      fontWeight: weight,
+      fill,
+      align: 'center',
       stroke: { color: 0x3a2400, width: size * 0.08 },
     }),
   });
@@ -39,7 +42,7 @@ export class BonusGame {
     const roll = Math.random();
     if (roll < 0.03) return { jackpot: 'MAJOR', amount: JACKPOTS.MAJOR.mult * bet };
     if (roll < 0.09) return { jackpot: 'MINOR', amount: JACKPOTS.MINOR.mult * bet };
-    if (roll < 0.20) return { jackpot: 'MINI', amount: JACKPOTS.MINI.mult * bet };
+    if (roll < 0.2) return { jackpot: 'MINI', amount: JACKPOTS.MINI.mult * bet };
     const v = weightedPick(BONUS.coinValues, BONUS.coinValueWeights);
     return { jackpot: null, amount: v * bet };
   }
@@ -57,7 +60,7 @@ export class BonusGame {
     return { c, slot, reel, row, state: 'empty', coin: null, sprite: null, label: null };
   }
 
-  async _landCoin(cell, info, bet) {
+  async _landCoin(cell, info) {
     cell.state = 'coin';
     cell.coin = info;
     const sp = new Sprite(this.textures.coin);
@@ -68,33 +71,54 @@ export class BonusGame {
     cell.sprite = sp;
     cell.c.addChild(sp);
 
-    const lab = txt(info.jackpot ? info.jackpot : fmt(info.amount),
+    const lab = txt(
+      info.jackpot ? info.jackpot : fmt(info.amount),
       info.jackpot ? 26 : 40,
-      info.jackpot ? JACKPOTS[info.jackpot].color : COLORS.textWhite);
+      info.jackpot ? JACKPOTS[info.jackpot].color : COLORS.textWhite,
+    );
     lab.anchor.set(0.5);
     lab.y = 4;
     cell.label = lab;
     cell.c.addChild(lab);
     lab.alpha = 0;
 
-    sp.filters = [new GlowFilter({ color: COLORS.coin, distance: 14, outerStrength: 2, quality: 0.2 })];
+    sp.filters = [
+      new GlowFilter({ color: COLORS.coin, distance: 14, outerStrength: 2, quality: 0.2 }),
+    ];
     audio.coinLand();
-    this.effects.burst(cell.c.x, cell.c.y, { count: 16, colors: [COLORS.coin, 0xfff2b0], scale: 0.7 });
-    await tween(360, (t, e) => {
-      sp.scale.set(0.1 + e * (GRID.symbolSize * 0.92 / this.textures.coin.width - 0.1) + e * 0.0);
-      sp.scale.set((0.1 + 0.9 * e));
-      lab.alpha = Math.max(0, (t - 0.5) * 2);
-    }, Ease.outBack);
+    this.effects.burst(cell.c.x, cell.c.y, {
+      count: 16,
+      colors: [COLORS.coin, 0xfff2b0],
+      scale: 0.7,
+    });
+    await tween(
+      360,
+      (t, e) => {
+        sp.scale.set(
+          0.1 + e * ((GRID.symbolSize * 0.92) / this.textures.coin.width - 0.1) + e * 0.0,
+        );
+        sp.scale.set(0.1 + 0.9 * e);
+        lab.alpha = Math.max(0, (t - 0.5) * 2);
+      },
+      Ease.outBack,
+    );
     sp.scale.set(1);
     lab.alpha = 1;
   }
 
   async _respinFlicker(emptyCells) {
     // quick flicker on empty cells to sell the spin
-    const flickTex = [this.textures.cherry, this.textures.bell, this.textures.seven, this.textures.bar];
+    const flickTex = [
+      this.textures.cherry,
+      this.textures.bell,
+      this.textures.seven,
+      this.textures.bar,
+    ];
     const ghosts = emptyCells.map((cell) => {
       const s = new Sprite(flickTex[0]);
-      s.anchor.set(0.5); s.width = GRID.symbolSize * 0.8; s.height = GRID.symbolSize * 0.8;
+      s.anchor.set(0.5);
+      s.width = GRID.symbolSize * 0.8;
+      s.height = GRID.symbolSize * 0.8;
       s.alpha = 0.35;
       cell.c.addChild(s);
       return { s, cell };
@@ -111,22 +135,27 @@ export class BonusGame {
   async run(triggerCoinCells, bet) {
     // (re)build board
     this.root.removeChildren();
-    const dim = new Graphics().rect(0, 0, DESIGN.width, DESIGN.height).fill({ color: 0x02040c, alpha: 0.82 });
+    const dim = new Graphics()
+      .rect(0, 0, DESIGN.width, DESIGN.height)
+      .fill({ color: 0x02040c, alpha: 0.82 });
     this.root.addChild(dim);
 
     const banner = txt('HOLD & WIN', 70, COLORS.frameGold);
-    banner.anchor.set(0.5); banner.position.set(DESIGN.width / 2, 130);
-    banner.filters = [new GlowFilter({ color: COLORS.coin, distance: 18, outerStrength: 3, quality: 0.2 })];
+    banner.anchor.set(0.5);
+    banner.position.set(DESIGN.width / 2, 130);
+    banner.filters = [
+      new GlowFilter({ color: COLORS.coin, distance: 18, outerStrength: 3, quality: 0.2 }),
+    ];
     this.root.addChild(banner);
 
     const respinText = txt('RESPINS  3', 40, COLORS.textWhite);
-    respinText.anchor.set(0.5); respinText.position.set(DESIGN.width / 2, 250);
+    respinText.anchor.set(0.5);
+    respinText.position.set(DESIGN.width / 2, 250);
     this.root.addChild(respinText);
 
     const cells = [];
     for (let reel = 0; reel < 3; reel++)
-      for (let row = 0; row < 3; row++)
-        cells[reel * 3 + row] = this._makeCell(reel, row);
+      for (let row = 0; row < 3; row++) cells[reel * 3 + row] = this._makeCell(reel, row);
 
     const cellAt = (reel, row) => cells[reel * 3 + row];
 
@@ -136,7 +165,7 @@ export class BonusGame {
 
     // place triggering coins
     for (const { reel, row } of triggerCoinCells) {
-      await this._landCoin(cellAt(reel, row), this._decideCoin(bet), bet);
+      await this._landCoin(cellAt(reel, row), this._decideCoin(bet));
       await wait(90);
     }
 
@@ -158,7 +187,7 @@ export class BonusGame {
 
       if (landed.length > 0) {
         for (const cell of landed) {
-          await this._landCoin(cell, this._decideCoin(bet), bet);
+          await this._landCoin(cell, this._decideCoin(bet));
           await wait(80);
         }
         respins = BONUS.respins; // reset on any new coin
@@ -177,7 +206,8 @@ export class BonusGame {
     const coinCells = cells.filter((c) => c.state === 'coin');
 
     const totalText = txt('0', 64, COLORS.win);
-    totalText.anchor.set(0.5); totalText.position.set(DESIGN.width / 2, 250);
+    totalText.anchor.set(0.5);
+    totalText.position.set(DESIGN.width / 2, 250);
     respinText.visible = false;
     this.root.addChild(totalText);
 
@@ -186,8 +216,14 @@ export class BonusGame {
       total += cell.coin.amount;
       if (cell.coin.jackpot) audio.jackpot(cell.coin.jackpot);
       else audio.coinCollect(i % 8);
-      this.effects.burst(cell.c.x, cell.c.y, { count: 10, colors: [COLORS.coin, COLORS.win], scale: 0.6 });
-      cell.sprite.filters = [new GlowFilter({ color: COLORS.win, distance: 18, outerStrength: 4, quality: 0.2 })];
+      this.effects.burst(cell.c.x, cell.c.y, {
+        count: 10,
+        colors: [COLORS.coin, COLORS.win],
+        scale: 0.6,
+      });
+      cell.sprite.filters = [
+        new GlowFilter({ color: COLORS.win, distance: 18, outerStrength: 4, quality: 0.2 }),
+      ];
       totalText.text = fmt(total);
       totalText.scale.set(1.2);
       await tween(120, (t, e) => totalText.scale.set(1.2 - 0.2 * e));
@@ -196,14 +232,25 @@ export class BonusGame {
     if (filledAll) {
       total += JACKPOTS.GRAND.mult * bet;
       const grand = txt('GRAND JACKPOT!', 64, JACKPOTS.GRAND.color);
-      grand.anchor.set(0.5); grand.position.set(DESIGN.width / 2, DESIGN.height / 2 + 360);
-      grand.filters = [new GlowFilter({ color: JACKPOTS.GRAND.color, distance: 24, outerStrength: 5, quality: 0.25 })];
+      grand.anchor.set(0.5);
+      grand.position.set(DESIGN.width / 2, DESIGN.height / 2 + 360);
+      grand.filters = [
+        new GlowFilter({
+          color: JACKPOTS.GRAND.color,
+          distance: 24,
+          outerStrength: 5,
+          quality: 0.25,
+        }),
+      ];
       this.root.addChild(grand);
       audio.jackpot('GRAND');
       this.effects.screenShake(this.app.stage, 26, 0.92);
       for (let b = 0; b < 6; b++) {
-        this.effects.burst(DESIGN.width / 2 + randInt(-300, 300), DESIGN.height / 2 + randInt(-300, 300),
-          { count: 30, scale: 1 });
+        this.effects.burst(
+          DESIGN.width / 2 + randInt(-300, 300),
+          DESIGN.height / 2 + randInt(-300, 300),
+          { count: 30, scale: 1 },
+        );
         await wait(120);
       }
       totalText.text = fmt(total);
@@ -211,7 +258,9 @@ export class BonusGame {
 
     await wait(1400);
     // fade out
-    await tween(450, (t) => { this.root.alpha = 1 - t; });
+    await tween(450, (t) => {
+      this.root.alpha = 1 - t;
+    });
     this.root.visible = false;
     this.root.alpha = 1;
     return total;

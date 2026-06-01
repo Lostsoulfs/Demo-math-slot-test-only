@@ -1,8 +1,10 @@
 name: Deploy to GitHub Pages
 
-# Builds the Vite bundle and publishes it to GitHub Pages so the slot is
-# playable at a live URL. One-time setup: repo Settings -> Pages ->
-# Source: "GitHub Actions".
+# Builds the Vite bundle and (a) always uploads it as a downloadable artifact,
+# and (b) publishes it to GitHub Pages IF Pages is enabled.
+# One-time setup for the live URL: repo Settings -> Pages -> Source: "GitHub Actions".
+# If Pages isn't enabled (or not on the repo's plan), the run still succeeds and
+# you can grab the build from the run's "Artifacts" section.
 
 on:
   push:
@@ -21,6 +23,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      pages_ready: ${{ steps.pages.outcome }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -29,13 +33,28 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+
+      # Always available: download the playable build from the run page.
+      - name: Upload build artifact (downloadable)
+        uses: actions/upload-artifact@v4
+        with:
+          name: slot-build
+          path: dist
+
+      # Pages path — tolerated if Pages isn't enabled yet.
+      - name: Configure Pages
+        id: pages
+        continue-on-error: true
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        if: steps.pages.outcome == 'success'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
     needs: build
+    if: needs.build.outputs.pages_ready == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

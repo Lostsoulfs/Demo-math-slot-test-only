@@ -8,6 +8,16 @@ something.** Include the date and enough context to be useful later.
 
 ## 2026-06-01
 
+- **PR drift audit is free without an API key.** `scripts/audit-drift.mjs` is a
+  dependency-free deterministic auditor; CI (`.github/workflows/audit.yml`)
+  posts via the built-in `GITHUB_TOKEN` and applies only safe auto-fixes
+  (prettier / eslint --fix). Semantic claim-vs-code review is done by the
+  in-session auditor (runs on the session, also free). The paid Anthropic API
+  was only ever needed for semantic checks *in CI* — skipped. See
+  `docs/DRIFT-AUDIT.md`. GitHub Actions pushes made with `GITHUB_TOKEN` do not
+  retrigger workflows, so the auto-fix commit can't cause an audit loop. Fork
+  PRs get a read-only token, so the job is gated to same-repo PRs.
+
 - **Pixi v8 `renderer.generateTexture({ frame })` needs a `Rectangle` instance**,
   not a plain `{ x, y, width, height }` object. Passing a plain object throws
   `e.frame?.copyTo is not a function`. Fix: `import { Rectangle } from 'pixi.js'`
@@ -31,5 +41,5 @@ something.** Include the date and enough context to be useful later.
 - **Registering a SessionStart hook is gated by the harness.** Writing
   `.claude/settings.json` (hook registration and/or permission allow-rules) is
   treated as self-modification and is blocked unless the user explicitly
-  authorizes it / adds the permission rule themselves. The hook *script* can be
+  authorizes it / adds the permission rule themselves. The hook _script_ can be
   created freely; only the settings registration needs user action.

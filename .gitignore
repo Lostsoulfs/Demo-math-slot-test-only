@@ -3,3 +3,6 @@ dist/
 *.log
 # verification screenshots
 shot-*.png
+# generated drift-audit report + scratch
+audit-report.md
+.audit/

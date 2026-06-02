@@ -11,7 +11,7 @@ This file is auto-loaded into context for this repo.
 ## Working Agreement (applies to me AND every subagent/agent)
 
 1. **Never declare something impossible.** When a task fails, web-search the
-   latest updates, root causes, and workarounds *before* reporting back.
+   latest updates, root causes, and workarounds _before_ reporting back.
    Exhaust real options first; report a dead end only after you've actually
    looked.
 2. **Document findings.** When you discover something useful — a fix, a gotcha,
@@ -39,6 +39,21 @@ Pure entertainment demo (play money only, no real wagering).
 - All tunables live in `src/config.js`.
 - In-app debug panel: append `?debug=1` to the URL or press the backtick key
   (force WIN/BIG/MEGA/EPIC/BONUS, live sliders, theme switcher, FPS meter).
+
+## PR drift audit
+
+Every PR is audited for **drift** — divergence between what was logged (commits,
+PR body, `docs/LEARNINGS.md` — the externalized "world state") and what the diff
+actually did. Two free auditors (full design in `docs/DRIFT-AUDIT.md`):
+
+- **CI** (`.github/workflows/audit.yml`): runs `scripts/audit-drift.mjs` on
+  every PR, posts a report comment, applies safe auto-fixes (prettier /
+  eslint --fix). No API key — uses the built-in `GITHUB_TOKEN`.
+- **In-session:** when watching a PR, spawn an **auditor subagent** that runs
+  `node scripts/audit-drift.mjs --run-checks`, additionally reconciles claims
+  vs the code's _meaning_ (and subagent transcripts), posts/updates the report,
+  applies only the safe auto-fixes, and appends the outcome to
+  `docs/LEARNINGS.md`. Report-only for anything logic-affecting.
 
 ## Environment notes
 

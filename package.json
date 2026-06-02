@@ -8,9 +8,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint src verify.mjs",
+    "lint": "eslint src scripts verify.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "audit": "node scripts/audit-drift.mjs"
   },
   "dependencies": {
     "pixi-filters": "^6.1.4",

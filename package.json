@@ -26,10 +26,10 @@
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
     "lil-gui": "^0.21.0",
-    "playwright": "^1.56.1",
+    "playwright": "^1.60.0",
     "prettier": "^3.8.3",
     "stats.js": "^0.17.0",
-    "vite": "^6.0.7",
+    "vite": "^8.0.16",
     "vitest": "^4.1.8"
   }
 }

@@ -8,9 +8,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint src scripts verify.mjs",
+    "lint": "eslint src scripts test verify.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "audit": "node scripts/audit-drift.mjs"
   },
   "dependencies": {
@@ -26,6 +28,7 @@
     "playwright": "^1.56.1",
     "prettier": "^3.8.3",
     "stats.js": "^0.17.0",
-    "vite": "^6.0.7"
+    "vite": "^6.0.7",
+    "vitest": "^3.2.6"
   }
 }

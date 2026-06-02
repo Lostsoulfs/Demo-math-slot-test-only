@@ -8,3 +8,5 @@ audit-report.md
 .audit/
 # local agent observability log (hook events)
 .claude/logs/
+# personal journal — private, never committed to this public repo
+PERSONAL_JOURNAL.md

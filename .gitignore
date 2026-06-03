@@ -8,3 +8,18 @@ audit-report.md
 .audit/
 # local agent observability log (hook events)
 .claude/logs/
+
+# Secrets / credential carriers — never commit
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.keystore
+id_rsa*
+credentials*
+*.tfvars
+
+# Personal / Drive tier — must never reach GitHub
+PERSONAL_JOURNAL*
+private/

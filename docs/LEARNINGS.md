@@ -6,6 +6,26 @@ something.** Include the date and enough context to be useful later.
 
 ---
 
+## 2026-06-05
+
+- **Ported the Health-Prototype recurrence engine** into `src/recurrence.js`
+  (+ `src/recurrenceData.js`, `test/recurrence.test.js`, `npm run
+demo:recurrence`). Pure logic, no Pixi — see ADR-0012. The
+  "librarian, not interpreter" firewall (surface/count/cite, never score or
+  diagnose) is carried into the header and asserted by a test.
+- **Two Python builtins had to be ported by hand to reproduce the oracle:**
+  - `difflib.SequenceMatcher.ratio()` — the opt-in fuzzy layer. Ported as
+    Ratcliff/Obershelp (`ratio = 2*M/T`, recursive longest-matching-block).
+    Sanity-checked against Python: ratio('blood presure','blood pressure') =
+    0.962963 (M=13, T=27). A naive similarity would NOT have matched the v1
+    answer key. (Autojunk/junk handling skipped — labels are far under the
+    200-element threshold.)
+  - `round()` is **banker's rounding** (round-half-to-even). R016's cadence
+    line depends on it: `round(9.5)` must be `10`, not `9`. JS `Math.round`
+    rounds half up and would diverge — use the `pyRound` helper.
+- **Verification that "works":** the JS `--report`/`--report-v1` output diffs
+  byte-for-byte against `python recurrence.py --report` in Health-Prototype.
+
 ## 2026-06-02
 
 - **Stacked-PR merge mechanics (operational, web-confirmed).** PR #2 was stacked

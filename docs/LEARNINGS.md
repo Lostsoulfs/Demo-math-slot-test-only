@@ -10,7 +10,7 @@ something.** Include the date and enough context to be useful later.
 
 - **Ported the Health-Prototype recurrence engine** into `src/recurrence.js`
   (+ `src/recurrenceData.js`, `test/recurrence.test.js`, `npm run
-  demo:recurrence`). Pure logic, no Pixi — see ADR-0012. The
+demo:recurrence`). Pure logic, no Pixi — see ADR-0012. The
   "librarian, not interpreter" firewall (surface/count/cite, never score or
   diagnose) is carried into the header and asserted by a test.
 - **Two Python builtins had to be ported by hand to reproduce the oracle:**

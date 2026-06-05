@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "pixi-filters": "^6.1.4",
-    "pixi.js": "^8.6.6"
+    "pixi.js": "^8.19.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

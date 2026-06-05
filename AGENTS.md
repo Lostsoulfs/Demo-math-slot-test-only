@@ -97,6 +97,12 @@ npm run audit        # drift audit on the current branch (see docs/DRIFT-AUDIT.m
 6. **Don't declare a tool or approach broken on the first failure.** Re-check the
    inputs/parameters and retry once with corrections before concluding it doesn't
    work — most "tool is broken" turns out to be a wrong argument.
+7. **Decision protocol — research informs, the operator decides.** When asking the
+   operator to choose between approaches, always offer a **"research it"** option:
+   **web search + audit + a Mixture-of-Experts deliberation (min 3, max 6 expert
+   agents that argue and rebut), time-boxed**, then report the findings. **Never
+   act on the MoE/research conclusion automatically — the final decision is ALWAYS
+   the operator's.** They may re-run the protocol, including through other LLMs.
 
 ## Handling untrusted content
 

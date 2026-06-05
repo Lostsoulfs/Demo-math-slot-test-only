@@ -20,6 +20,6 @@ id_rsa*
 credentials*
 *.tfvars
 
-# Personal / Drive tier — must never reach GitHub
+# Personal / Drive tier — must never reach GitHub (covers PERSONAL_JOURNAL.md)
 PERSONAL_JOURNAL*
 private/

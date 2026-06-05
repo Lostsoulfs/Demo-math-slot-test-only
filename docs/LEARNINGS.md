@@ -6,6 +6,26 @@ something.** Include the date and enough context to be useful later.
 
 ---
 
+## 2026-06-05
+
+- **Ported the Health-Prototype recurrence engine** into `src/recurrence.js`
+  (+ `src/recurrenceData.js`, `test/recurrence.test.js`, `npm run
+demo:recurrence`). Pure logic, no Pixi — see ADR-0012. The
+  "librarian, not interpreter" firewall (surface/count/cite, never score or
+  diagnose) is carried into the header and asserted by a test.
+- **Two Python builtins had to be ported by hand to reproduce the oracle:**
+  - `difflib.SequenceMatcher.ratio()` — the opt-in fuzzy layer. Ported as
+    Ratcliff/Obershelp (`ratio = 2*M/T`, recursive longest-matching-block).
+    Sanity-checked against Python: ratio('blood presure','blood pressure') =
+    0.962963 (M=13, T=27). A naive similarity would NOT have matched the v1
+    answer key. (Autojunk/junk handling skipped — labels are far under the
+    200-element threshold.)
+  - `round()` is **banker's rounding** (round-half-to-even). R016's cadence
+    line depends on it: `round(9.5)` must be `10`, not `9`. JS `Math.round`
+    rounds half up and would diverge — use the `pyRound` helper.
+- **Verification that "works":** the JS `--report`/`--report-v1` output diffs
+  byte-for-byte against `python recurrence.py --report` in Health-Prototype.
+
 ## 2026-06-03
 
 - **Cross-repo secret/PII + agent-safety layer landed here.** Added a pure-stdlib
@@ -21,6 +41,27 @@ something.** Include the date and enough context to be useful later.
   is intentionally omitted (dated frontmatter is everywhere — too noisy).
 
 ## 2026-06-02
+
+- **Stacked-PR merge mechanics (operational, web-confirmed).** PR #2 was stacked
+  on the visual-demo PR #1 (base = `fast-visual-demo`, not `main`). Lessons:
+  (1) **Merge the lowest PR with a MERGE COMMIT, never squash/rebase** — squashing
+  the base rewrites its SHAs and the upper PR's diff explodes / orphans. The TOP
+  PR _can_ safely squash (nothing is stacked above it). (2) GitHub only
+  auto-retargets the next PR to `main` if the merged head branch is **deleted**;
+  our merge didn't delete it, so we **manually retargeted #2 → main**, which is
+  safe _after_ #1 lands (the demo's commits are already in main's history → no
+  explosion) but would explode the diff _before_. (3) The **CI drift-audit pushes
+  its own `audit: auto-fix` commit** to the PR branch — so after a push, expect a
+  non-fast-forward on the next push: `git fetch` + `rebase`, and **pre-run
+  prettier locally** to avoid triggering yet another auto-fix commit.
+
+- **Decision protocol adopted (Working Agreement #7).** Operator decisions now
+  offer a "research it" option (web search + audit + 3–6 expert MoE that argue +
+  rebut, time-boxed). MoE/research is **advisory only — the operator always makes
+  the final call**, and may re-run via other LLMs. The visual-demo PR #1 was
+  landed to `main` only after a review gate (CI green + `audit-drive` showed no
+  deep nesting + no secrets; its one "high" audit finding was a false positive —
+  the regex matched the auditor's own documentation text).
 
 - **Code-quality gate, not just correctness (Sonar "AI code quality" finding).**
   Functional pass-rate ≠ maintainability: AI tends to bloat and over-nest code

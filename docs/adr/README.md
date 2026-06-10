@@ -18,3 +18,6 @@ To add one: copy `0000-template.md` to the next number, fill it in, set Status.
 | 0007 | GitHub Pages deploy with artifact fallback       | Accepted |
 | 0008 | Vitest for the deterministic core; smoke for E2E | Accepted |
 | 0009 | AGENTS.md as the canonical cross-tool contract   | Accepted |
+| 0010 | Slot-math verification harness + certified RTP   | Accepted |
+| 0011 | Genuine 96% TOTAL RTP; remove demo nudges        | Accepted |
+| 0012 | Ported recurrence engine alongside the game      | Accepted |

@@ -2,7 +2,8 @@
 
 Auto-loaded for Claude Code. **Read [`AGENTS.md`](AGENTS.md) first — it is the
 canonical contract** (commands, structure, code style, boundaries, git workflow,
-and the Working Agreement). This file adds only the Claude-specific bits.
+and the Working Agreement). For the distilled version, skim
+[`GOLDEN_RULES.md`](GOLDEN_RULES.md). This file adds only the Claude-specific bits.
 
 ## Subagent directive (mandatory)
 

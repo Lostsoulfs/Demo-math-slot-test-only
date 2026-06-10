@@ -4,16 +4,23 @@ This is a **play-money entertainment demo** — no accounts, no payments, no rea
 wagering, no personal data, and no backend. The attack surface is a static
 client-side bundle.
 
-## Reporting
+## Reporting a Vulnerability
 
-If you find a security issue (e.g. a dependency vulnerability or an XSS vector in
-the build), please open a private report via GitHub Security Advisories on this
-repo, or email the maintainer. Please don't file public issues for exploitable
-vulnerabilities until they're fixed.
+If you find a security issue (e.g. a dependency vulnerability or an XSS vector
+in the build), report it privately:
+
+- Go to this repo's **Security tab → "Report a vulnerability"** (GitHub private
+  vulnerability reporting — it opens a private advisory visible only to the
+  maintainer and you).
+- **Do not open a public issue** for an exploitable vulnerability — public
+  issues are immediately visible to everyone.
+- Expect an initial response within **7 days**. Coordinated disclosure is
+  appreciated: please give the maintainer a chance to fix before publishing.
 
 ## Dependencies
 
-- `npm audit` runs are reviewed; Dependabot opens weekly update PRs.
+- `npm audit` runs are reviewed; Dependabot opens monthly grouped update PRs
+  (see `.github/dependabot.yml`).
 - No secrets are required to run or build the project. CI uses only the built-in
   `GITHUB_TOKEN`.
 

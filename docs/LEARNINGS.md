@@ -12,7 +12,7 @@ something.** Include the date and enough context to be useful later.
   Four Gemini "deep dive" docs were reviewed for useful additions. Three of them
   (AI-dev trustworthiness, solo-repo security, advanced testing) cite
   **unverifiable, future-dated sources** (`arXiv:2603.*`, "ICLR 2026", tools like
-  *ClaimCheck/Lore*) — treated as **RESEARCH_ONLY**, judged by concept not
+  _ClaimCheck/Lore_) — treated as **RESEARCH_ONLY**, judged by concept not
   citation. The gaming-math doc's sources are real (GLI-19, NIST SP 800-22,
   `scipy.stats.binomtest`). **The research mostly VALIDATED what this repo already
   does** — so a future session should NOT "rediscover" it: seeded `mulberry32`;

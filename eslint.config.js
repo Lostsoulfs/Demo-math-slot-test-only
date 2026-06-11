@@ -6,6 +6,18 @@ import prettier from 'eslint-config-prettier';
 // checks (a lesson isn't learned until a machine enforces it). Each entry
 // cites the dated LEARNINGS entry it came from. AST selectors, so comments
 // and strings can't false-positive. All had ZERO hits when introduced.
+//
+// SCOPE (read before trusting these as a wall — they're a tripwire for the
+// COMMON form, not exhaustive). Known-uncovered evasions, by design:
+//   - `el.addEventListener('pointermove', …)` — only `.on(` is matched, not
+//     Pixi v8's other listener API.
+//   - `generateTexture({ frame: f })` where `f` is a variable — only an
+//     inline object literal is matched.
+//   - `globalThis.localStorage` / `self.localStorage` — only bare
+//     `localStorage` and `window.localStorage` are matched.
+// These don't exist today; widen the selectors here (and the fixtures in
+// test/eslint-footguns.test.js) if one ever shows up. The regression test is
+// what keeps these selectors honest after a flat-config refactor.
 const pixiFootguns = [
   {
     // LEARNINGS 2026-06-11: Pixi v8 fires plain 'pointermove' only while the

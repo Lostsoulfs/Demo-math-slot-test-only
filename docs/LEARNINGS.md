@@ -42,6 +42,22 @@ evergreen rules to `GOLDEN_RULES.md`, mark superseded entries historical.
   - **Accepted gaps got issues**: #24 (jackpot chips don't theme, ex-F8), #25
     (theme-switch mid-bonus pop, ex-F4) — deferred work in PR prose is where
     it goes to die.
+  - **#26 self-audit fold-ins (Scott-gated).** The deep audit caught the loop
+    eating its own tail: the footgun lint rules had **no permanent test** —
+    proven only by a throwaway probe, so a flat-config refactor could silently
+    neuter a selector while `npm run lint` stayed green (the PR's own thesis,
+    one level up). Fixed: **F1** → `test/eslint-footguns.test.js` runs the REAL
+    config through ESLint's `Linter` API on inline fixtures, filename-routed so
+    the `src/**` vs `src/persist.js` scoping is exercised (8 tests: each rule
+    fires on the bad form, passes on `globalpointermove`/`new Rectangle`, and
+    persist.js is storage-exempt but Pixi-still-enforced). **F2** → a SCOPE
+    comment in `eslint.config.js` naming the known-uncovered evasions
+    (`addEventListener`, variable frame, `globalThis`/`self.localStorage`) so
+    the next author treats the rules as a tripwire for the common form, not a
+    wall. Gotcha for porters: `Linter.verify(code, config, { filename })`
+    applies flat-config `files`/`ignores` by the passed filename — that's how
+    you unit-test path-scoped rules without touching disk; filter messages by
+    `ruleId` to drop `no-undef` noise from the fixtures.
 
 - **Spokey horror theme + Settings/Paytable + ambient dread (PR 1 of 2).** Added
   a 5th `spokey` theme preset (dark-but-colorful) with cabinet chrome, a

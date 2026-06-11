@@ -58,6 +58,20 @@ evergreen rules to `GOLDEN_RULES.md`, mark superseded entries historical.
     applies flat-config `files`/`ignores` by the passed filename — that's how
     you unit-test path-scoped rules without touching disk; filter messages by
     `ruleId` to drop `no-undef` noise from the fixtures.
+  - **CI caught what local `npm test` didn't (mutation probe).** The F1 test
+    `test/eslint-footguns.test.js` imports `../eslint.config.js`, but
+    `scripts/mutation-probe.mjs` copies only a `COPY` allowlist (`src`, `test`,
+    `scripts`, `package.json`, `vitest.config.js`) into its isolated `/tmp`
+    clone — so the baseline vitest run there threw `ERR_MODULE_NOT_FOUND` on
+    `eslint.config.js` and the `mutation` CI step failed **while lint/test/
+    build/smoke all passed**. I'd claimed "130 green / CI green" off local runs
+    without running `npm run mutation` — a verify-before-claiming miss (WA#5);
+    the end-session drift sweep is what surfaced the red. Fix: add
+    `eslint.config.js` to the probe's `COPY` list (same class as the earlier
+    `scripts/` addition). **Rule: any new test that imports a repo file outside
+    `src/`/`test/`/`scripts/` must be matched by a `COPY` entry, or the
+    mutation probe's baseline breaks.** Always run `npm run mutation` (not just
+    `npm test`) before claiming a green PR.
 
 - **Spokey horror theme + Settings/Paytable + ambient dread (PR 1 of 2).** Added
   a 5th `spokey` theme preset (dark-but-colorful) with cabinet chrome, a

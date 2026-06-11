@@ -22,8 +22,11 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const REPO = process.cwd();
-// scripts/ is needed since test/auditLib.test.js imports scripts/audit-lib.mjs
-const COPY = ['src', 'test', 'scripts', 'package.json', 'vitest.config.js'];
+// The temp copy must include every file the test suite imports, or vitest
+// errors on the baseline run and the probe fails. scripts/ → test/auditLib
+// imports scripts/audit-lib.mjs; eslint.config.js → test/eslint-footguns
+// imports it (node_modules is symlinked, but config FILES must be copied).
+const COPY = ['src', 'test', 'scripts', 'eslint.config.js', 'package.json', 'vitest.config.js'];
 
 // Each mutation: a single targeted source edit that SHOULD break a test.
 const MUTATIONS = [

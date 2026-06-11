@@ -10,10 +10,10 @@ import {
 import { PAYTABLE, PAYLINES } from '../src/config.js';
 
 // Ported from the Drive Python suite (slot_machine_v2_weighted.py:
-// theoretical_rtp / monte_carlo) — the PAR-sheet + convergence checks a
-// certification lab runs. Golden figures are for the live (shipped) config:
-// a lean base game (~45.69%) whose Hold & Win feature carries the rest of the
-// certified ~96% TOTAL (see test/rtp-target.test.js + docs/PAR-SHEET.md).
+// theoretical_rtp / monte_carlo) — the PAR-sheet + convergence checks computed
+// by enumeration and simulation. Golden figures are for the live (shipped)
+// config: a lean base game (~45.69%) whose Hold & Win feature carries the rest
+// of the self-computed ~96% TOTAL (see test/rtp-target.test.js + docs/PAR-SHEET.md).
 
 describe('theoreticalRtp (exact PAR-sheet math)', () => {
   const th = theoreticalRtp(defaultModel());

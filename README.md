@@ -1,6 +1,12 @@
 # 🎰 Coins: Hold & Win
 
-A flashy, **buttery-smooth** Playson-style 3×3 slot machine, built with **PixiJS v8 (WebGL)** so it stays at 60fps even with glow, particles, and screen shake piled on.
+> **Educational portfolio demo — not a gambling product.** Play-money only:
+> credits have no cash value and reset on reload; there are no prizes. Nothing
+> here is certified, audited, or approved by any regulator or testing lab — the
+> RTP and statistics shown are computed by this project's own simulation, for
+> transparency. See [`DISCLAIMER.md`](DISCLAIMER.md).
+
+A flashy, **buttery-smooth** classic-style 3×3 slot machine, built with **PixiJS v8 (WebGL)** so it stays at 60fps even with glow, particles, and screen shake piled on.
 
 ## Features
 
@@ -8,7 +14,7 @@ A flashy, **buttery-smooth** Playson-style 3×3 slot machine, built with **PixiJ
 - **Glossy classic-fruit symbols** (cherries, lemon, plum, watermelon, bell, BAR, lucky 7) plus the gold **coin** bonus symbol — all drawn procedurally (no image assets, crisp at any resolution).
 - **Line wins**: glowing cell highlights, particle bursts, screen shake, and a rolling WIN count-up with BIG / MEGA / EPIC banners.
 - **Hold & Win bonus**: land 6+ coins → coins lock, 3 respins (reset on every new coin), cash values + **MINI / MINOR / MAJOR** jackpots, and the **GRAND** for filling all 9. It's the RTP engine — the feature, not the base game, carries most of the payback.
-- **Certified ~96% TOTAL RTP**: pure RNG, no nudges — every cell is a weighted draw and pays strictly by the paytable, so the played return equals the certified math. Verified end-to-end by an in-repo lab harness (see [`docs/PAR-SHEET.md`](docs/PAR-SHEET.md)).
+- **Self-computed ~96% TOTAL RTP**: pure RNG, no nudges — every cell is a weighted draw and pays strictly by the paytable, so the played return equals the self-computed math. The RTP is computed by this project's own simulation (enumeration + Monte-Carlo), shown for transparency — see the [disclaimer](DISCLAIMER.md) and [`docs/PAR-SHEET.md`](docs/PAR-SHEET.md).
 - **Auto-spin + attract mode**: hands-free spinning that auto-starts after idle — perfect to leave running on a screen.
 - **Procedural WebAudio SFX**: spin whir, reel clicks, win chimes, coin dings, jackpot fanfare — synthesized at runtime, no audio files. Toggle with the SOUND button.
 
@@ -51,7 +57,7 @@ npm run preview  # serve the build locally
 Everything lives in [`src/config.js`](src/config.js): palette, symbols, reel-strip weights,
 paytable, paylines, jackpots, the Hold & Win feature economy (`BONUS`), bet levels,
 spin timing, and a `QUALITY` block to trade visuals ↔ performance. Retune a number and
-re-certify with `npm test` / the `slotmath.js` harness (see [`docs/PAR-SHEET.md`](docs/PAR-SHEET.md)).
+recompute with `npm test` / the `slotmath.js` harness (see [`docs/PAR-SHEET.md`](docs/PAR-SHEET.md)).
 
 ## Project layout
 

@@ -1,9 +1,9 @@
 // =====================================================================
-// test helper: the statistical tests gambling labs use to certify an RNG
-// (GLI-19 / eCOGRA reference NIST SP 800-22 & Diehard; the core reference
-// distributions are chi-square and Kolmogorov-Smirnov). These are pure
-// functions returning a statistic; tests assert it is within the critical
-// value for a fixed seed (deterministic, so no flakiness).
+// test helper: statistical tests that check an RNG for uniformity and
+// independence (the core reference distributions are chi-square and
+// Kolmogorov-Smirnov). These are pure functions returning a statistic; tests
+// assert it is within the critical value for a fixed seed (deterministic, so
+// no flakiness).
 // =====================================================================
 
 // Chi-square goodness-of-fit of U(0,1) samples binned into k buckets.

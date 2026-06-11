@@ -1,12 +1,12 @@
 // =====================================================================
 // outcome.js — generates the predetermined spin result (3x3 grid).
 //
-// Pure RNG, exactly like a regulated slot: every cell is drawn
+// Pure RNG, like a typical online slot: every cell is drawn
 // independently from the virtual reel strip (SYMBOL_WEIGHTS, coin
 // included). There are NO nudges — no forced wins, no forced bonuses,
 // no coin-stripping. The grid the player sees is exactly what the math
 // model in `slotmath.js` simulates, so the experienced RTP equals the
-// certified RTP (see docs/PAR-SHEET.md). Wins are then read off the grid
+// self-computed RTP (see docs/PAR-SHEET.md). Wins are then read off the grid
 // by `wins.js`; 6+ coins trigger the Hold & Win bonus.
 // =====================================================================
 

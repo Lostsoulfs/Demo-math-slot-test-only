@@ -10,9 +10,9 @@ import {
 import { weightedPick } from '../src/utils.js';
 import { SYMBOLS, SYMBOL_WEIGHTS } from '../src/config.js';
 
-// The statistical battery gambling labs use to certify an RNG (GLI-19 /
-// eCOGRA reference NIST SP 800-22 & Diehard; chi-square and KS are the
-// core reference distributions). Seeds are fixed, so every statistic is
+// A statistical battery that checks the RNG for uniformity and independence:
+// chi-square and KS are the core reference distributions, alongside runs and
+// serial-correlation tests. Seeds are fixed, so every statistic is
 // deterministic — these never flake.
 const SEED = 2026;
 
@@ -38,7 +38,7 @@ describe('seeded RNG (mulberry32) — basic guarantees', () => {
   });
 });
 
-describe('RNG randomness battery (NIST/Diehard-style)', () => {
+describe('RNG randomness battery (uniformity + independence)', () => {
   it('chi-square frequency/uniformity test passes (k=10, dof=9, crit 16.919)', () => {
     const chi2 = chiSquareUniform(mulberry32(SEED), 100_000, 10);
     expect(chi2).toBeLessThan(16.919);

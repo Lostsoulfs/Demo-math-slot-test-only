@@ -1,22 +1,22 @@
 # PAR Sheet — Coins: Hold & Win
 
-A **Probability / Accounting Report**: the certified math of the game, the way
-a testing lab (GLI, eCOGRA, iTech) documents and verifies a slot. Every figure
-here is produced by the in-repo math harness (`src/slotmath.js`) and locked by
-tests (`test/slotmath.test.js`, `test/rtp-target.test.js`, `test/rng-stats.test.js`,
-`test/bonus.test.js`).
+A **Probability / Accounting Report**: the self-computed math of the game. Every
+figure here is produced by the in-repo math harness (`src/slotmath.js`) by
+enumeration + simulation, and locked by tests (`test/slotmath.test.js`,
+`test/rtp-target.test.js`, `test/rng-stats.test.js`, `test/bonus.test.js`).
 
 > Pure entertainment demo — play money only, no real wagering. The math below
-> is nonetheless built to a real regulated-online-slot spec (a single certified
-> **TOTAL** RTP of ~96%), so the pipeline mirrors how a live game is signed off.
+> targets a typical online-slot RTP (~96%, a single **TOTAL** across base +
+> feature). The figures are computed by this project's own simulation, shown for
+> transparency. See [`../DISCLAIMER.md`](../DISCLAIMER.md) for the full demo notice.
 
-**Last certified:** 2026-06-02 (ADR-0011 retune, PR #2) — deterministic pin:
+**Last computed:** 2026-06-02 (ADR-0011 retune, PR #2) — deterministic pin:
 seed 2026, 12M spins → **96.08%** total; 5 seeds × 20M spins → mean **96.008%**.
 
 ## The one number that matters: TOTAL RTP ≈ 96%
 
-This is a **hold-and-win** game, so RTP is certified as a single TOTAL across
-the base lines **and** the Hold & Win feature — exactly as a lab certifies a
+This is a **hold-and-win** game, so RTP is computed as a single TOTAL across
+the base lines **and** the Hold & Win feature — as is typical for a
 Lightning-Link-style title (the feature, not the base game, is the RTP engine).
 
 | Component              | RTP (×bet) |
@@ -28,17 +28,17 @@ Lightning-Link-style title (the feature, not the base game, is the RTP engine).
 
 - **Base game** is **exact** (full payline enumeration — zero variance).
 - **Feature** is intractable to enumerate, so it's measured by a high-volume
-  seeded Monte-Carlo (`monteCarloFullGame()`), the same way labs handle
+  seeded Monte-Carlo (`monteCarloFullGame()`), the practical way to model
   hold-and-win features.
 - **5 seeds × 20M spins:** mean total **96.008%**, range **95.83%–96.24%**
   (per-seed 95% CI ±0.44pp). Deterministic check (seed 2026, 12M spins):
   **96.08%** — pinned in `test/rtp-target.test.js`.
 
-### No nudges — played RTP **equals** certified RTP
+### No nudges — played RTP **equals** the self-computed RTP
 
 The live game (`src/outcome.js`) draws each of the 9 cells independently from
 the reel-strip weights below and pays strictly by the paytable. There are **no
-forced wins and no forced bonuses** — the experienced RTP is the certified RTP.
+forced wins and no forced bonuses** — the experienced RTP is the self-computed RTP.
 (An earlier build leaned on demo "nudges"; those were removed so the game is as
 close to a real RNG slot as possible.)
 
@@ -55,8 +55,8 @@ npm run mutation   # proves the math tests catch bugs (100% kill rate)
 2. **Actual (Monte-Carlo)** — seeded millions of spins with a 95% CI
    (`monteCarloLine()` for the base, `monteCarloFullGame()` for base+feature).
    Convergence check: the exact base figure sits **inside** the simulated CI.
-3. **RNG battery** — seeded mulberry32 passes chi-square / KS / runs /
-   serial-correlation (`test/rng-stats.test.js`); labs reference NIST SP 800-22.
+3. **RNG battery** — seeded mulberry32 passes uniformity/independence tests:
+   chi-square / KS / runs / serial-correlation (`test/rng-stats.test.js`).
 
 ## Reel model
 

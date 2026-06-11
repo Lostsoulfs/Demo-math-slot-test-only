@@ -6,6 +6,27 @@ something.** Include the date and enough context to be useful later.
 
 ---
 
+## 2026-06-11
+
+- **Factual-wording sweep (ADR-0014) — no certification/lab claims anywhere.**
+  This is a play-money portfolio demo; it cannot be certified, audited, or
+  reviewed by any regulator/lab. Earlier wording across code comments, docs,
+  ADRs, tests, and the README framed the math the way a real-money slot lab
+  documents one — "certified", "the way a lab certifies", "fair", "regulated",
+  "compliant", plus standards-body name-drops (GLI/GLI-19, eCOGRA, iTech, NIST
+  SP 800-22, Diehard). All of that was **claiming a status the project doesn't
+  have**, so it was reworded to what the code actually does: the RTP is
+  **self-computed by this project's own simulation (enumeration + Monte-Carlo),
+  shown for transparency** — never "certified". Wording-only change: no logic,
+  assertions, numbers, or function names touched; 84/84 tests stayed green, lint
+  + build clean. Also genericized "Playson-style" → "classic-style" everywhere
+  (Playson is a real studio; the disclaimer says we're not affiliated with any
+  studio and all names are original). Demo framing now lives in three
+  always-present places: `DISCLAIMER.md`, a README blockquote, and an in-app
+  banner in `index.html`. Enforcement grep (should return nothing outside this
+  append-only log, the policy ADR-0014, and the disclaimer negations):
+  `git grep -nIPi "certif|complian|fairness|regulat|GLI|eCOGRA|iTech|\bNIST\b|diehard"`.
+
 ## 2026-06-10
 
 - **Research fold-in (testing/gaming-math) → metamorphic invariants (ADR-0013).**

@@ -13,7 +13,7 @@ _Nothing yet._
 
 ### Added
 
-- **The slot** — "Coins: Hold & Win", a Playson-style 3×3 PixiJS v8 (WebGL) slot:
+- **The slot** — "Coins: Hold & Win", a classic-style 3×3 PixiJS v8 (WebGL) slot:
   procedural glossy symbols, deterministic motion-blurred reels, 5 paylines,
   line-win celebrations (glow / particles / shake / rolling count-up), the Hold &
   Win bonus (locking coins, respins, MINI→GRAND jackpots), auto-spin/attract, and
@@ -44,19 +44,19 @@ _Nothing yet._
 ### Changed
 
 - **Retuned the shipped game to a genuine ~96% TOTAL RTP** (base lines + Hold &
-  Win), the way a regulated hold-and-win slot is certified (ADR-0011). The
+  Win), a typical online-slot RTP computed by simulation (ADR-0011). The
   feature is now the RTP engine: coins land ~25%/cell so 6+ trigger naturally
   ~1 in 100 spins; base game ~45.7%, feature ~50.3%, **total ~96.0%** (5 seeds ×
   20M: mean 96.008%; deterministic 12M pin 96.08%). GRAND 1000×→500×, leaner
   feature economy, rarer full-board fill. (PR #2)
 - **Removed the demo "nudges."** `outcome.js` is now pure RNG — every cell is a
   weighted draw paid strictly by the paytable, so the experienced RTP equals the
-  certified RTP. Feature odds (`BONUS.jackpotOdds`, `BONUS.respinLandChance`) are
+  self-computed RTP. Feature odds (`BONUS.jackpotOdds`, `BONUS.respinLandChance`) are
   centralized in `config.js` and shared by the live feature and the math model.
   (PR #2)
 - Replaced the opt-in `RTP96_WEIGHTS` preset with a single `RTP_TARGET = 0.96`;
-  `test/rtp-target.test.js` now certifies the shipped game's TOTAL (12M-spin
-  Monte-Carlo) and `monteCarloFullGame()` reports a `maxWin`. (PR #2)
+  `test/rtp-target.test.js` now verifies the shipped game's TOTAL by simulation
+  (12M-spin Monte-Carlo) and `monteCarloFullGame()` reports a `maxWin`. (PR #2)
 - **Vite 6 → 8 major bump** (`vite` 6.4.2 → 8.0.16, with `playwright`
   1.56.1 → 1.60.0) via Dependabot, commit `44bfd28`. No config changes were
   needed; dev server, build, and preview verified working.

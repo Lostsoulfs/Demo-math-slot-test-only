@@ -7,14 +7,14 @@ import {
 } from '../src/slotmath.js';
 import { RTP_TARGET } from '../src/config.js';
 
-// Certifies the SHIPPED game (the default config) to a real ~96% TOTAL RTP —
-// base lines + the Hold & Win feature — the way a lab certifies a hold-and-win
-// slot: the base game is exact (payline enumeration); the feature is
-// intractable to enumerate, so it's measured by a high-volume seeded
-// Monte-Carlo. There are no demo nudges — the played game draws from these
-// same weights and pays strictly by the paytable — so the certified RTP IS the
-// experienced RTP. Headline figures + method: docs/PAR-SHEET.md, docs/adr/0011.
-describe('certified ~96% TOTAL RTP (shipped/default game)', () => {
+// Computes the SHIPPED game (the default config) to a real ~96% TOTAL RTP —
+// base lines + the Hold & Win feature — by enumeration + simulation: the base
+// game is exact (payline enumeration); the feature is intractable to enumerate,
+// so it's measured by a high-volume seeded Monte-Carlo. There are no demo
+// nudges — the played game draws from these same weights and pays strictly by
+// the paytable — so the self-computed RTP IS the experienced RTP. Headline
+// figures + method: docs/PAR-SHEET.md, docs/adr/0011.
+describe('self-computed ~96% TOTAL RTP (shipped/default game)', () => {
   const model = defaultModel();
   const th = theoreticalRtp(model);
 
@@ -35,12 +35,12 @@ describe('certified ~96% TOTAL RTP (shipped/default game)', () => {
     expect(trigger).toBeCloseTo(0.01006, 4); // ~1 in 99 spins
   });
 
-  it('TOTAL RTP (lines + feature) certifies to ~96% — seeded Monte-Carlo', () => {
+  it('TOTAL RTP (lines + feature) computes to ~96% — seeded Monte-Carlo', () => {
     const fg = monteCarloFullGame(model, { seed: 2026, spins: 12_000_000 });
     // Deterministic regression pin (mulberry32 is integer-stable across
     // platforms): any change to weights/paytable/bonus shifts this and trips.
     expect(fg.rtp).toBeCloseTo(0.96082, 4);
-    // Certification band around the 96% target.
+    // Acceptance band around the 96% target.
     expect(fg.rtp).toBeGreaterThanOrEqual(0.955);
     expect(fg.rtp).toBeLessThanOrEqual(0.965);
     // The feature is the RTP engine, not the base lines.
@@ -50,7 +50,7 @@ describe('certified ~96% TOTAL RTP (shipped/default game)', () => {
     expect(fg.lineRtp).toBeCloseTo(th.lineRtp, 2);
   }, 60_000);
 
-  it('is deterministic for a fixed seed (reproducible certification)', () => {
+  it('is deterministic for a fixed seed (reproducible computation)', () => {
     const a = monteCarloFullGame(model, { seed: 7, spins: 200_000 });
     const b = monteCarloFullGame(model, { seed: 7, spins: 200_000 });
     expect(a.rtp).toBe(b.rtp);

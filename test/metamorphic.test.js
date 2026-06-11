@@ -9,7 +9,7 @@ import {
 
 // Metamorphic tests — relations the math MUST satisfy under a transformed
 // input, without us having to know the exact output (the oracle). They catch
-// a class of bugs the existing certification pins can't: a calculation that
+// a class of bugs the existing regression pins can't: a calculation that
 // secretly depends on something it shouldn't.
 //
 // (Bet-scaling invariance is deliberately NOT here: the full-game RTP is

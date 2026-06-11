@@ -71,6 +71,23 @@
           transform: rotateY(360deg) scale(1);
         }
       }
+      /* Always-visible factual demo notice */
+      #demo-notice {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 20;
+        margin: 0;
+        padding: 4px 8px;
+        text-align: center;
+        font-size: 11px;
+        line-height: 1.3;
+        color: #aeb8d0;
+        background: rgba(3, 6, 15, 0.72);
+        pointer-events: none;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+      }
     </style>
   </head>
   <body>
@@ -79,6 +96,10 @@
       <div class="coin-spin"></div>
       <div>Loading&hellip;</div>
     </div>
+    <p id="demo-notice">
+      Demo &middot; play-money only &middot; no real money, no prizes &middot; not certified or
+      audited
+    </p>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -5,7 +5,7 @@
 
 ## Context
 
-We needed glossy Playson-style symbols and casino SFX fast, in an ephemeral
+We needed glossy classic-style symbols and casino SFX fast, in an ephemeral
 container, without shipping copyrighted slot art/sound or managing binary assets.
 
 ## Decision

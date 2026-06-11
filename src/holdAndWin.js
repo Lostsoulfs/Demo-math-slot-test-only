@@ -39,7 +39,7 @@ export class BonusGame {
 
   _decideCoin(bet) {
     // small chance of a jackpot coin, otherwise a cash value. Odds come from
-    // config (BONUS.jackpotOdds) so this matches the certified math model.
+    // config (BONUS.jackpotOdds) so this matches the math model.
     const { major, minor, mini } = BONUS.jackpotOdds;
     const roll = Math.random();
     if (roll < major) return { jackpot: 'MAJOR', amount: JACKPOTS.MAJOR.mult * bet };

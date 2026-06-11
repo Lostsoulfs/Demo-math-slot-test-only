@@ -109,7 +109,7 @@ describe('simulateBonus (open -> resolve ledger)', () => {
 describe('natural bonus trigger rate (shipped config)', () => {
   it('triggers naturally ~1 in 100 spins and the feature drives the RTP', () => {
     // No nudges: the bonus fires purely from the RNG (coins ~25%/cell), and it
-    // carries the majority of the certified ~96% total RTP.
+    // carries the majority of the self-computed ~96% total RTP.
     const fg = monteCarloFullGame(defaultModel(), { seed: 777, spins: 1_000_000 });
     expect(fg.bonusTriggerRate).toBeGreaterThan(0.007); // ~1 in 100
     expect(fg.bonusTriggerRate).toBeLessThan(0.014);

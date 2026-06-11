@@ -17,7 +17,7 @@ describe('generateOutcome', () => {
     }
   });
 
-  it('triggers the bonus naturally (no nudges) at roughly the certified rate', () => {
+  it('triggers the bonus naturally (no nudges) at roughly the computed rate', () => {
     // Pure RNG: ~25% of cells are coins, so P(6+ of 9) ≈ 1%. Over many seeded
     // spins the natural trigger rate should land in a sane band — the bonus is
     // reachable in real play, not forced. (Seeded -> deterministic, no flake.)

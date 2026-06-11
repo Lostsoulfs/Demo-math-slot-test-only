@@ -10,7 +10,7 @@ export const DESIGN = {
   height: 1280,
 };
 
-// ---- Reel grid: classic Playson 3x3 ----
+// ---- Reel grid: classic 3x3 ----
 export const GRID = {
   reels: 3,
   rows: 3,
@@ -21,7 +21,7 @@ export const GRID = {
   y: 320,
 };
 
-// ---- Palette (deep blue + gold Playson sheen) ----
+// ---- Palette (deep blue + gold sheen) ----
 export const COLORS = {
   bgTop: 0x12306e,
   bgBottom: 0x04081c,
@@ -59,7 +59,7 @@ export const SYMBOLS = [
 // real virtual strip) so RTP can be tuned at fine resolution. Coin is the
 // bonus symbol and is deliberately frequent (~25%/cell) so that 6+ coins —
 // the Hold & Win trigger — land at a real rate of ~1 in 100 spins. See
-// docs/PAR-SHEET.md + docs/adr/0011 for how the certified 96% TOTAL is split.
+// docs/PAR-SHEET.md + docs/adr/0011 for how the self-computed 96% TOTAL is split.
 export const SYMBOL_WEIGHTS = {
   cherry: 520,
   lemon: 480,
@@ -96,7 +96,7 @@ export const PAYTABLE = {
 // This is the RTP engine of the game (it contributes ~50pp of the ~96% total;
 // see docs/PAR-SHEET.md). The coin economy below is read by BOTH the live
 // feature (holdAndWin.js) AND the math model (slotmath.js) so the played game
-// is identical to the certified math — change a number here and re-certify.
+// is identical to the math model — change a number here and recompute.
 export const BONUS = {
   triggerCount: 6, // coins needed on the board to start the bonus
   respins: 3, // respins reset to this each time a new coin lands
@@ -199,11 +199,11 @@ export const THEMES = {
 };
 export const THEME_NAMES = Object.keys(THEMES);
 
-// ---- Certified RTP target (see docs/PAR-SHEET.md + docs/adr/0011) ----
+// ---- RTP target (self-computed; see docs/PAR-SHEET.md + docs/adr/0011) ----
 // The default config above is tuned so the game's TOTAL RTP (base lines +
-// the Hold & Win feature, which contributes the majority) certifies to the
-// regulated-online-slot target of ~96%, verified end-to-end by the math
-// harness (`monteCarloFullGame()`). There are no demo nudges: the played
+// the Hold & Win feature, which contributes the majority) computes to a
+// typical online-slot RTP of ~96%, verified by simulation end-to-end by the
+// math harness (`monteCarloFullGame()`). There are no demo nudges: the played
 // game draws each cell from the weights above and pays strictly by the
-// paytable, so the experienced RTP equals the certified RTP.
+// paytable, so the experienced RTP equals the self-computed RTP.
 export const RTP_TARGET = 0.96;

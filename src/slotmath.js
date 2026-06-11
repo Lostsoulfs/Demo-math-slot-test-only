@@ -1,7 +1,7 @@
 // =====================================================================
 // slotmath.js — pure slot-math verification harness (no Pixi).
 //
-// Computes the game's math the way a certification lab does:
+// Computes the game's RTP by enumeration + simulation:
 //   - theoreticalRtp()  : exact RTP / hit-frequency / volatility by
 //                         full enumeration of one payline (the PAR-sheet
 //                         calculation). Total RTP = per-line x #paylines
@@ -12,12 +12,12 @@
 //                         convergence check (theoretical should sit inside
 //                         the simulated CI).
 //   - monteCarloFullGame: full simulation INCLUDING the Hold & Win bonus,
-//                         which is intractable to enumerate (the doc/labs
-//                         use Monte-Carlo for hold-and-win features).
+//                         which is intractable to enumerate (Monte-Carlo is
+//                         the practical way to model hold-and-win features).
 //   - parSheet()        : a human-readable Probability/Accounting Report.
 //
 // The model defaults to the live `config.js`. Pass overrides to
-// `buildModel()` to certify an alternate tuning. This module is the math
+// `buildModel()` to recompute an alternate tuning. This module is the math
 // model; it does not drive the renderer.
 // =====================================================================
 
@@ -25,7 +25,7 @@ import { SYMBOLS, SYMBOL_WEIGHTS, PAYLINES, PAYTABLE, BONUS, JACKPOTS, ECONOMY }
 
 // Hold & Win coin-decision odds — sourced from config (BONUS) so the bonus
 // Monte-Carlo matches the live feature (holdAndWin.js) exactly. The live
-// game and the certified model read the SAME numbers; there is no second
+// game and the math model read the SAME numbers; there is no second
 // copy to drift out of sync.
 export const DEFAULT_BONUS_ODDS = {
   major: BONUS.jackpotOdds.major, // roll < major          -> MAJOR jackpot coin
@@ -248,7 +248,7 @@ export function simulateBonus(triggerCells, model, rng) {
 // ---- Monte-Carlo: full game (lines + Hold & Win bonus), seeded ---------
 // The bonus triggers naturally when `triggerCount`+ coin symbols land on
 // the grid — exactly what the live `evaluate()` counts. This is the
-// total-RTP figure a lab would simulate for a hold-and-win feature.
+// total-RTP figure this simulation computes for a hold-and-win feature.
 export function monteCarloFullGame(
   model = defaultModel(),
   { seed = 12345, spins = 1_000_000 } = {},

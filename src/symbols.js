@@ -10,7 +10,7 @@ import { GRID, COLORS } from './config.js';
 const S = GRID.symbolSize;
 const C = S / 2; // center
 
-// soft elliptical highlight for that high-gloss Playson sheen
+// soft elliptical highlight for that high-gloss sheen
 function gloss(g, cx, cy, rx, ry) {
   g.ellipse(cx - rx * 0.22, cy - ry * 0.34, rx * 0.55, ry * 0.34).fill({
     color: 0xffffff,

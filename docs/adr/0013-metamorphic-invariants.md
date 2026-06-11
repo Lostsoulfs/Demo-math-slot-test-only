@@ -5,7 +5,7 @@
 
 ## Context
 
-The slot-math harness is already certified by exact enumeration (`theoreticalRtp`)
+The slot-math harness is already verified by exact enumeration (`theoreticalRtp`)
 and a seeded high-volume Monte-Carlo with a CI band (`monteCarloFullGame`,
 ADR-0010/0011), plus an RNG statistical battery and property/fuzz tests. Those
 pin the math to known values. A research pass on testing strategy (see

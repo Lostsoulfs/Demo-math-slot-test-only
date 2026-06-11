@@ -8,7 +8,7 @@ changes. (Why-decisions live in `docs/adr/`; gotchas in `docs/LEARNINGS.md`.)
 
 ## 1. Overview
 
-A Playson-style 3×3 slot ("…Coins: Hold and Win" look): glossy classic-fruit
+A classic-style 3×3 slot ("…Coins: Hold and Win" look): glossy classic-fruit
 symbols, deep-blue + gold theme, gold **coin** bonus symbols, a Hold & Win
 respin bonus, big-win celebrations, auto-spin/attract, and procedural sound.
 Built for **max visuals at a steady 60fps**.
@@ -28,7 +28,7 @@ bar, seven`, plus the `coin` bonus symbol. (`src/config.js: SYMBOLS`.)
   seven 100.
 - **Pure RNG, no nudges:** each of the 9 cells is an independent weighted draw
   (`src/outcome.js`) paid strictly by the paytable, so the played return equals
-  the certified math.
+  the self-computed math.
 
 ## 4. Hold & Win bonus (`src/holdAndWin.js`)
 
@@ -39,12 +39,12 @@ bar, seven`, plus the `coin` bonus symbol. (`src/config.js: SYMBOLS`.)
 - Filling all 9 cells awards the **GRAND**. Jackpots (× bet): MINI 20, MINOR 50,
   MAJOR 200, GRAND 500.
 
-## 4a. Certified RTP
+## 4a. RTP (self-computed)
 
-- **TOTAL RTP ≈ 96%** (base lines ~45.7% + Hold & Win feature ~50.3%), the way a
-  regulated hold-and-win slot is certified. Base is exact (enumeration); the
-  feature is measured by seeded Monte-Carlo. Full method + figures:
-  `docs/PAR-SHEET.md`; rationale: `docs/adr/0011`.
+- **TOTAL RTP ≈ 96%** (base lines ~45.7% + Hold & Win feature ~50.3%), a typical
+  online-slot RTP, computed by this project's own simulation. Base is exact
+  (enumeration); the feature is measured by seeded Monte-Carlo. Full method +
+  figures: `docs/PAR-SHEET.md`; rationale: `docs/adr/0011`.
 
 ## 5. Celebrations & feedback
 

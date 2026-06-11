@@ -4,7 +4,7 @@ Canonical contract for any AI coding agent working in this repo (Claude reads
 `CLAUDE.md`, which points here). Keep this lean — every line must change agent
 behavior.
 
-**"Coins: Hold & Win"** — a Playson-style 3×3 slot. Pure entertainment demo,
+**"Coins: Hold & Win"** — a classic-style 3×3 slot. Pure entertainment demo,
 **play money only, no real wagering**.
 
 **Quick cheat-sheet:** [`GOLDEN_RULES.md`](GOLDEN_RULES.md) distills the rules
@@ -42,9 +42,9 @@ npm run demo:recurrence  # print the recurrence engine's report (see ADR-0012)
 - **`src/`** — `main.js` (boot + game-state machine), `reels.js` (reel engine),
   `symbols.js` (procedural textures), `wins.js` (payline eval), `outcome.js`
   (pure weighted RNG — no nudges), `holdAndWin.js` (bonus), `slotmath.js` (the
-  certification harness), `effects.js`, `ui.js`, `audio.js`, `debug.js`, and
-  **`config.js` — all tunables live here.** The game certifies to a ~96% TOTAL
-  RTP; retune `config.js` and re-verify (`docs/PAR-SHEET.md`, `docs/adr/0011`).
+  RTP-computation harness), `effects.js`, `ui.js`, `audio.js`, `debug.js`, and
+  **`config.js` — all tunables live here.** The game self-computes a ~96% TOTAL
+  RTP by simulation; retune `config.js` and recompute (`docs/PAR-SHEET.md`, `docs/adr/0011`).
   Plus `recurrence.js` + `recurrenceData.js` — a domain-agnostic recurrence
   engine, decoupled from the game (no Pixi, no game wiring); see ADR-0012.
 - **`scripts/audit-drift.mjs`**, **`scripts/recurrence-demo.mjs`**, **`test/`**,

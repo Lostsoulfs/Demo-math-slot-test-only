@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { evaluate } from '../src/wins.js';
 import { generateOutcome } from '../src/outcome.js';
 import { mulberry32, withSeededRandom } from './helpers/seededRng.js';
-import { SYMBOLS, ECONOMY } from '../src/config.js';
+import { SYMBOLS, ECONOMY, GRID } from '../src/config.js';
 
 // Property-based + fuzz tests (ported from the testing-kits property/fuzz
 // harnesses). Seeded generators keep them deterministic.
@@ -10,9 +10,9 @@ const IDS = SYMBOLS.map((s) => s.id);
 
 function randomGrid(rng) {
   const g = [];
-  for (let reel = 0; reel < 3; reel++) {
+  for (let reel = 0; reel < GRID.reels; reel++) {
     const col = [];
-    for (let row = 0; row < 3; row++) col.push(IDS[Math.floor(rng() * IDS.length)]);
+    for (let row = 0; row < GRID.rows; row++) col.push(IDS[Math.floor(rng() * IDS.length)]);
     g.push(col);
   }
   return g;
@@ -41,14 +41,14 @@ describe('properties of evaluate()', () => {
 });
 
 describe('properties of generateOutcome()', () => {
-  it('always returns a 3×3 grid of valid symbol ids (5000 seeded spins)', () => {
+  it('always returns a GRID.reels × GRID.rows grid of valid symbol ids (5000 seeded spins)', () => {
     const idSet = new Set(IDS);
     withSeededRandom(12345, () => {
       for (let n = 0; n < 5000; n++) {
         const g = generateOutcome();
-        expect(g).toHaveLength(3);
+        expect(g).toHaveLength(GRID.reels);
         for (const reel of g) {
-          expect(reel).toHaveLength(3);
+          expect(reel).toHaveLength(GRID.rows);
           for (const id of reel) expect(idSet.has(id)).toBe(true);
         }
       }
@@ -62,9 +62,10 @@ describe('fuzz: evaluate() never throws on adversarial input', () => {
     const garbage = [...IDS, 'coin', 'UNKNOWN', '', undefined, null, 123];
     for (let i = 0; i < 2000; i++) {
       const g = [];
-      for (let reel = 0; reel < 3; reel++) {
+      for (let reel = 0; reel < GRID.reels; reel++) {
         const col = [];
-        for (let row = 0; row < 3; row++) col.push(garbage[Math.floor(rng() * garbage.length)]);
+        for (let row = 0; row < GRID.rows; row++)
+          col.push(garbage[Math.floor(rng() * garbage.length)]);
         g.push(col);
       }
       expect(() => {

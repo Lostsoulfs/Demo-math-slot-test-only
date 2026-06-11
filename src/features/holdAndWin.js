@@ -37,8 +37,8 @@ export function decideCoin(rng, model) {
 // every trigger coin, then each respin scan cells 0..N deciding a coin where
 // one lands), so the seeded RTP is unchanged from the previous inline sim.
 export function play(triggerCells, model, rng) {
-  const reels = model.paylines[0].length;
-  const rows = Math.max(...model.paylines.flat()) + 1;
+  const reels = model.reels ?? model.paylines[0].length;
+  const rows = model.rows ?? Math.max(...model.paylines.flat()) + 1;
   const cellCount = reels * rows;
   const coins = new Array(cellCount).fill(null);
   const events = [];

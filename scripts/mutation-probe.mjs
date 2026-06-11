@@ -74,15 +74,17 @@ const MUTATIONS = [
     find: 'const mean = sum / spins;',
     replace: 'const mean = sum / spins / 2;',
   },
+  // these two strings moved from slotmath.js to the extracted feature module
+  // in the Phase-1 de-dup (PR #17) — point at the new home so they run
   {
-    name: 'slotmath: MAJOR jackpot coin never decided',
-    file: 'src/slotmath.js',
+    name: 'feature: MAJOR jackpot coin never decided',
+    file: 'src/features/holdAndWin.js',
     find: 'if (roll < odds.major)',
     replace: 'if (false)',
   },
   {
-    name: 'slotmath: GRAND never awarded on a full board',
-    file: 'src/slotmath.js',
+    name: 'feature: GRAND never awarded on a full board',
+    file: 'src/features/holdAndWin.js',
     find: 'if (filledAll) total += model.bonus.jackpots.GRAND;',
     replace: 'if (false) total += model.bonus.jackpots.GRAND;',
   },

@@ -1,6 +1,7 @@
 // =====================================================================
-// wins.js — pure payline evaluation over the 3x3 grid.
-// grid[reel][row], row 0=top, 1=mid, 2=bottom.
+// wins.js — pure payline evaluation over the N×M grid.
+// grid[reel][row], row 0=top … rows-1=bottom. Dimensions come from the
+// grid itself and PAYLINES; nothing here assumes a fixed shape.
 // =====================================================================
 
 import { PAYLINES, PAYTABLE } from './config.js';
@@ -10,7 +11,7 @@ export function evaluate(grid, bet) {
   let total = 0;
 
   PAYLINES.forEach((line, lineIndex) => {
-    // line = [rowReel0, rowReel1, rowReel2]
+    // line = [rowReel0, rowReel1, …] — one row index per reel
     const ids = line.map((row, reel) => grid[reel][row]);
     const first = ids[0];
     if (first === 'coin') return; // coins don't pay lines, they trigger bonus

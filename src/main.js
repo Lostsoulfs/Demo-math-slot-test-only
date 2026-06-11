@@ -5,7 +5,18 @@
 
 import { Application, Container, Graphics, Text, TextStyle } from 'pixi.js';
 import { GlowFilter } from 'pixi-filters';
-import { DESIGN, GRID, COLORS, ECONOMY, SPIN, BONUS, BIGWIN, QUALITY, THEMES } from './config.js';
+import {
+  DESIGN,
+  GRID,
+  COLORS,
+  ECONOMY,
+  SPIN,
+  BONUS,
+  BIGWIN,
+  QUALITY,
+  THEMES,
+  PAYLINES,
+} from './config.js';
 import { buildSymbolTextures } from './symbols.js';
 import { ReelSet, CELL } from './reels.js';
 import { evaluate } from './wins.js';
@@ -380,8 +391,8 @@ import { tween, wait, Ease } from './utils.js';
   // ---------- debug API (used by src/debug.js and verify.mjs) ----------
   function fillerGrid() {
     const g = generateOutcome();
-    for (let r = 0; r < 3; r++)
-      for (let row = 0; row < 3; row++) if (g[r][row] === 'coin') g[r][row] = 'lemon'; // strip stray coins
+    for (let r = 0; r < GRID.reels; r++)
+      for (let row = 0; row < GRID.rows; row++) if (g[r][row] === 'coin') g[r][row] = 'lemon'; // strip stray coins
     return g;
   }
 
@@ -401,7 +412,7 @@ import { tween, wait, Ease } from './utils.js';
     forceLineWin(symbolId = 'seven') {
       if (state.busy) return;
       const g = fillerGrid();
-      g[0][1] = g[1][1] = g[2][1] = symbolId; // PAYLINES[0] = [1,1,1]
+      PAYLINES[0].forEach((row, reel) => (g[reel][row] = symbolId)); // land the first payline
       state.forceNext = g;
       state.lastInteract = performance.now();
       doSpin();
@@ -412,12 +423,13 @@ import { tween, wait, Ease } from './utils.js';
       if (state.busy) return;
       const g = fillerGrid();
       const cells = [];
-      for (let r = 0; r < 3; r++) for (let row = 0; row < 3; row++) cells.push([r, row]);
+      for (let r = 0; r < GRID.reels; r++)
+        for (let row = 0; row < GRID.rows; row++) cells.push([r, row]);
       for (let i = cells.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [cells[i], cells[j]] = [cells[j], cells[i]];
       }
-      const n = Math.max(BONUS.triggerCount, Math.min(9, coins));
+      const n = Math.max(BONUS.triggerCount, Math.min(GRID.reels * GRID.rows, coins));
       for (let i = 0; i < n; i++) {
         const [r, row] = cells[i];
         g[r][row] = 'coin';
@@ -453,8 +465,9 @@ import { tween, wait, Ease } from './utils.js';
     // run the bonus scene directly (no spin), used by verify.mjs
     runBonus: (coins = 7, bet = state.bet) => {
       const cells = [];
-      for (let r = 0; r < 3 && cells.length < coins; r++)
-        for (let row = 0; row < 3 && cells.length < coins; row++) cells.push({ reel: r, row });
+      for (let r = 0; r < GRID.reels && cells.length < coins; r++)
+        for (let row = 0; row < GRID.rows && cells.length < coins; row++)
+          cells.push({ reel: r, row });
       return bonus.run(cells, bet);
     },
   };

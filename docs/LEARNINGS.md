@@ -8,6 +8,54 @@ something.** Include the date and enough context to be useful later.
 
 ## 2026-06-11
 
+- **Coverage finding: the rendered payout path had NO executable check anywhere.**
+  Review of PR #18 surfaced that `evaluate()` scores the grid read back from
+  the reel strips (`reels.spin()` → `getGrid()` → `getVisible()`), NOT the
+  pre-committed outcome object — so the strip write/readback is
+  payout-load-bearing. Meanwhile `verify.mjs` (Playwright smoke) runs in **no
+  CI workflow** (ci.yml = lint+test+build only) and is blocked locally by the
+  container network policy — i.e. the entire render path shipped on reasoning
+  - "build succeeds". Fix folded into #18: extracted the strip-window index
+    math into pure `src/reelWindow.js` (`mod`, `writeOutcome`,
+    `visibleFromStrip`; reels.js delegates) and added
+    `test/reelWindow.test.js` — write/read pinned as exact inverses for 1–6
+    rows incl. wrap-around + only-touches-`rows`-slots, the pre-refactor
+    unrolled ROWS=3 indices asserted verbatim, and a headless
+    outcome→strip→readback→`evaluate()` test proving a planted win and planted
+    coin cells survive the round-trip and pay exactly. Follow-up worth doing
+    someday: run the smoke in CI (needs Playwright browser install there).
+- **Phase 2/PR A — grid is model-driven N×M (ADR-0015); default 3×3 byte-identical.**
+  Two implicit dimension sources existed (renderer read `GRID.reels/rows`; math
+  _inferred_ dims from PAYLINES). Now `defaultModel()` carries explicit
+  `reels`/`rows` from `GRID`; math consumers read `model.reels ?? inferred`
+  (fallback keeps hand-built test models working); the renderer keeps reading
+  `config.GRID` (no model threading — main.js stays the orchestrator). The flat
+  cell index is **column-major `reel*rows+row`** everywhere, matching
+  `monteCarloFullGame`'s `flat.slice(r*rows,…)` — `test/nbym.test.js` uses a
+  non-square 5×3 shape because a square grid can't distinguish `reel*rows+row`
+  from `reel*reels+row`. De-hardcoded: `outcome.js` literal `[[],[],[]]`+`<3`
+  loops; `reels.js` unrolled top/mid/bottom window → `strip[mod(target+ROWS-k)]`
+  for k=0…ROWS-1 (no-outcome filler stays SPINNABLE/coin-excluded); Pixi bonus
+  board build + `reel*3+row`; debug slider max 9; main.js debug helpers
+  (`forceLineWin` now lands `PAYLINES[0]` instead of assuming `[1,1,1]`).
+  **Equivalence proof:** before any edit, captured full-precision seeded outputs
+  (theoretical lineRtp; monteCarloFullGame at seeds 2026/1/42/777 incl. the 12M
+  headline 0.96081525; monteCarloLine seed 9); after the refactor every figure
+  is `===`-identical, and the suite is 94/94 (84 old + 10 new N×M tests). The
+  N×M tests assert finite/structural sanity ONLY — an untuned 5×3 board
+  triggers the bonus far more often than 3×3 (15 cells ≈ same per-cell coin
+  odds), so its RTP exceeds 1; per ADR-0014 no balance claim is made for
+  non-default shapes. `evaluate()` reads the LIVE config paylines, so N-wide
+  line math is proven via the model-driven harness; `evaluate`'s own loops are
+  shape-agnostic (tested with coins beyond the 3×3 window).
+- **Mutation probe had 2 silently-SKIPPED mutants since Phase 1** — their find
+  strings (`if (roll < odds.major)`, GRAND-award) moved from `slotmath.js` to
+  `src/features/holdAndWin.js` in PR #17, and the probe SKIPs when the string
+  isn't found in the declared file. Baseline before this fix: 8 KILLED / 2
+  SKIPPED (the old "10/10" in earlier entries predates the extraction).
+  Re-pointed the two `file:` fields at the feature module. Lesson: the probe's
+  find-strings are **location-coupled** — any refactor that moves pinned code
+  must re-point the probe, and "SKIPPED" is the tell.
 - **Phase 1 — Hold & Win feature de-duplicated into ONE pure source of truth.**
   `decideCoin` + the respin loop existed verbatim in both `slotmath.js` (seeded
   math) and `holdAndWin.js` (Pixi UI, via `_decideCoin` + an inline loop) — a

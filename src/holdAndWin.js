@@ -2,8 +2,8 @@
 // holdAndWin.js — the bonus showpiece.
 // Triggering coins lock in place; empty cells respin; each new coin
 // resets the respin counter. Coins carry cash values or MINI/MINOR/
-// MAJOR jackpots; filling all 9 awards the GRAND. Ends with a collect
-// count-up. run() resolves with the total win (x already applied bet).
+// MAJOR jackpots; filling every cell awards the GRAND. Ends with a
+// collect count-up. run() resolves with the total win (bet applied).
 // =====================================================================
 
 import { Container, Graphics, Sprite, Text, TextStyle } from 'pixi.js';
@@ -142,9 +142,12 @@ export class BonusGame {
     respinText.position.set(DESIGN.width / 2, 250);
     this.root.addChild(respinText);
 
+    // flat cell index is column-major (reel * rows + row) — must match the
+    // feature sim's flat layout in features/holdAndWin.js (ADR-0015)
     const cells = [];
-    for (let reel = 0; reel < 3; reel++)
-      for (let row = 0; row < 3; row++) cells[reel * 3 + row] = this._makeCell(reel, row);
+    for (let reel = 0; reel < GRID.reels; reel++)
+      for (let row = 0; row < GRID.rows; row++)
+        cells[reel * GRID.rows + row] = this._makeCell(reel, row);
 
     this.root.visible = true;
     audio.bonusTrigger();
@@ -155,7 +158,7 @@ export class BonusGame {
     // replay its event stream as animation. Coin amounts come back in x-bet
     // units, so multiply by the live bet for display.
     const model = defaultModel();
-    const triggerIdx = triggerCoinCells.map(({ reel, row }) => reel * 3 + row);
+    const triggerIdx = triggerCoinCells.map(({ reel, row }) => reel * GRID.rows + row);
     const { events } = playBonus(triggerIdx, model, Math.random);
     const withBet = (coin) => ({ jackpot: coin.jackpot, amount: coin.amount * bet });
 

@@ -15,7 +15,9 @@ Built for **max visuals at a steady 60fps**.
 
 ## 2. Reels & symbols
 
-- 3 reels × 3 visible rows. Symbols: `cherry, lemon, plum, watermelon, bell,
+- Default **3 reels × 3 visible rows**; the logic supports arbitrary N×M via
+  `config.GRID` + explicit model dims (ADR-0015; layout polish for non-3×3 is
+  a later visuals pass). Symbols: `cherry, lemon, plum, watermelon, bell,
 bar, seven`, plus the `coin` bonus symbol. (`src/config.js: SYMBOLS`.)
 - Spin: accelerate → motion-blurred spin → staggered left-to-right stops with an
   `easeOutBack` bounce. Outcomes are predetermined; the reel lands them (ADR-0003).

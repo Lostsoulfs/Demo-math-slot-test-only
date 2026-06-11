@@ -18,14 +18,14 @@ something.** Include the date and enough context to be useful later.
   have**, so it was reworded to what the code actually does: the RTP is
   **self-computed by this project's own simulation (enumeration + Monte-Carlo),
   shown for transparency** — never "certified". Wording-only change: no logic,
-  assertions, numbers, or function names touched; 84/84 tests stayed green, lint
-  - build clean. Also genericized "Playson-style" → "classic-style" everywhere
-    (Playson is a real studio; the disclaimer says we're not affiliated with any
-    studio and all names are original). Demo framing now lives in three
-    always-present places: `DISCLAIMER.md`, a README blockquote, and an in-app
-    banner in `index.html`. Enforcement grep (should return nothing outside this
-    append-only log, the policy ADR-0014, and the disclaimer negations):
-    `git grep -nIPi "certif|complian|fairness|regulat|GLI|eCOGRA|iTech|\bNIST\b|diehard"`.
+  assertions, numbers, or function names touched; 84/84 tests stayed green, and
+  lint and build were clean. Also genericized "Playson-style" to "classic-style"
+  everywhere (Playson is a real studio; the disclaimer says we are not affiliated
+  with any studio and all names are original). Demo framing now lives in three
+  always-present places: `DISCLAIMER.md`, a README blockquote, and an in-app
+  banner in `index.html`. Enforcement grep (should return nothing outside this
+  append-only log, the policy ADR-0014, and the disclaimer negations):
+  `git grep -nIPi "certif|complian|fairness|regulat|GLI|eCOGRA|iTech|\bNIST\b|diehard"`.
 
 ## 2026-06-10
 

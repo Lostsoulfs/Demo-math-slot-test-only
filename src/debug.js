@@ -17,6 +17,7 @@ import {
   THEME_NAMES,
   BONUS,
   PAYTABLE,
+  GRID,
 } from './config.js';
 
 let gui = null;
@@ -49,7 +50,7 @@ function build(api) {
   fA.add({ big: () => api.forceLineWin('bell') }, 'big').name('★ Force BIG (bell)');
   fA.add({ mega: () => api.forceLineWin('bar') }, 'mega').name('★★ Force MEGA (bar)');
   fA.add({ epic: () => api.forceLineWin('seven') }, 'epic').name('★★★ Force EPIC (7)');
-  fA.add(bonusProxy, 'coins', BONUS.triggerCount, 9, 1).name('bonus coins');
+  fA.add(bonusProxy, 'coins', BONUS.triggerCount, GRID.reels * GRID.rows, 1).name('bonus coins');
   fA.add({ bonus: () => api.forceBonus(bonusProxy.coins) }, 'bonus').name('🪙 Force BONUS');
   fA.open();
 

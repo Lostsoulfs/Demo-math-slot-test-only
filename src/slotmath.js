@@ -21,7 +21,16 @@
 // model; it does not drive the renderer.
 // =====================================================================
 
-import { SYMBOLS, SYMBOL_WEIGHTS, PAYLINES, PAYTABLE, BONUS, JACKPOTS, ECONOMY } from './config.js';
+import {
+  SYMBOLS,
+  SYMBOL_WEIGHTS,
+  PAYLINES,
+  PAYTABLE,
+  BONUS,
+  JACKPOTS,
+  ECONOMY,
+  GRID,
+} from './config.js';
 import { play as playBonus } from './features/holdAndWin.js';
 
 // Hold & Win coin-decision odds — sourced from config (BONUS) so the bonus
@@ -42,6 +51,10 @@ export function defaultModel() {
     weights: { ...SYMBOL_WEIGHTS },
     paytable: { ...PAYTABLE },
     paylines: PAYLINES.map((l) => [...l]),
+    // Canonical grid dimensions (ADR-0015). Consumers fall back to inferring
+    // from paylines so hand-built test models keep working.
+    reels: GRID.reels,
+    rows: GRID.rows,
     bonusSymbol: 'coin',
     jackpotSymbol: 'seven', // top line payer, used for jackpot-odds reporting
     bet: ECONOMY.betLevels[ECONOMY.defaultBetIndex],
@@ -114,7 +127,7 @@ function pickSymbol(cum, rng) {
 // Enumerates all symbols^reels combinations for ONE payline, weighted by
 // probability. Exact — this is the PAR-sheet calculation.
 export function theoreticalRtp(model = defaultModel()) {
-  const reels = model.paylines[0].length;
+  const reels = model.reels ?? model.paylines[0].length;
   const { p } = symbolProbabilities(model.weights);
   const ids = model.symbols;
 
@@ -157,8 +170,8 @@ export function theoreticalRtp(model = defaultModel()) {
 export function monteCarloLine(model = defaultModel(), { seed = 12345, spins = 1_000_000 } = {}) {
   const cum = cumulative(model.weights);
   const rng = mulberry32(seed);
-  const reels = model.paylines[0].length;
-  const rows = Math.max(...model.paylines.flat()) + 1;
+  const reels = model.reels ?? model.paylines[0].length;
+  const rows = model.rows ?? Math.max(...model.paylines.flat()) + 1;
 
   let sum = 0;
   let sumsq = 0;
@@ -228,8 +241,8 @@ export function monteCarloFullGame(
 ) {
   const cum = cumulative(model.weights);
   const rng = mulberry32(seed);
-  const reels = model.paylines[0].length;
-  const rows = Math.max(...model.paylines.flat()) + 1;
+  const reels = model.reels ?? model.paylines[0].length;
+  const rows = model.rows ?? Math.max(...model.paylines.flat()) + 1;
   const cellCount = reels * rows;
 
   let lineSum = 0;

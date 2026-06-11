@@ -1,5 +1,5 @@
 // =====================================================================
-// outcome.js — generates the predetermined spin result (3x3 grid).
+// outcome.js — generates the predetermined spin result (GRID.reels × GRID.rows).
 //
 // Pure RNG, like a typical online slot: every cell is drawn
 // independently from the virtual reel strip (SYMBOL_WEIGHTS, coin
@@ -10,7 +10,7 @@
 // by `wins.js`; 6+ coins trigger the Hold & Win bonus.
 // =====================================================================
 
-import { SYMBOLS, SYMBOL_WEIGHTS } from './config.js';
+import { SYMBOLS, SYMBOL_WEIGHTS, GRID } from './config.js';
 
 const ALL_IDS = SYMBOLS.map((s) => s.id);
 
@@ -26,11 +26,12 @@ function pickSymbol() {
   return ALL_IDS[ALL_IDS.length - 1];
 }
 
-// returns grid[reel][row] — nine independent weighted draws.
+// returns grid[reel][row] — GRID.reels × GRID.rows independent weighted draws.
 export function generateOutcome() {
-  const grid = [[], [], []];
-  for (let reel = 0; reel < 3; reel++) {
-    for (let row = 0; row < 3; row++) {
+  const grid = [];
+  for (let reel = 0; reel < GRID.reels; reel++) {
+    grid[reel] = [];
+    for (let row = 0; row < GRID.rows; row++) {
       grid[reel][row] = pickSymbol();
     }
   }

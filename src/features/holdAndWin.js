@@ -8,6 +8,17 @@
 // from the same decisions and can never drift apart.
 // =====================================================================
 
+// Trigger rule (the ONE source of truth — the live orchestrator and the
+// math harness both call this). Contract: `spin = { grid, cells }` where
+// `grid[reel][row]` is the full settled grid (canonical — a feature may
+// trigger on ANYTHING in it) and `cells` is the precomputed bonus-symbol
+// cells convenience (flat indices from the math harness, {reel,row} from
+// the live evaluate(); only the count is used here and the same array is
+// passed through as the bonus seed). No rng consumed.
+export function checkTrigger(spin, model) {
+  return spin.cells.length >= model.bonus.triggerCount ? { cells: spin.cells } : null;
+}
+
 // Decide one coin: a small chance of a jackpot coin, otherwise a weighted
 // cash value. Amounts are bet-agnostic multipliers (x bet); the renderer
 // multiplies by the actual bet. `rng` is injected.
@@ -70,3 +81,8 @@ export function play(triggerCells, model, rng) {
   if (filledAll) total += model.bonus.jackpots.GRAND;
   return { total, filledAll, coinsCollected: coins.filter(Boolean).length, events };
 }
+
+// The feature descriptor the registry consumes (ADR-0016): a pure
+// contract — trigger rule + round logic — with no renderer attached.
+// main.js maps the id to its Pixi scene; slotmath consumes play() directly.
+export const holdAndWinFeature = { id: 'holdAndWin', checkTrigger, play };

@@ -26,7 +26,7 @@
 
 import { execSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from 'node:fs';
-import { checkDeviationSection, historyLine, hasHead } from './audit-lib.mjs';
+import { checkDeviationSection, historyLine, hasHead, learningsDistillDue } from './audit-lib.mjs';
 
 const argv = process.argv.slice(2);
 const opt = {
@@ -229,6 +229,21 @@ if (srcChanged && !learningsChanged) {
     'medium',
     'LEARNINGS not updated',
     'Source changed but `docs/LEARNINGS.md` was not touched — capture any decision/gotcha (rule 2).',
+    [],
+  );
+}
+
+// memory hygiene (Working Agreement #9): repo-state check, not a diff check —
+// it nags on every PR while LEARNINGS.md stays over the limit, which is the
+// point (the distillation pass itself is Scott-gated, see AGENTS.md).
+const distill = learningsDistillDue(readIf('docs/LEARNINGS.md'));
+if (distill) {
+  add(
+    'learnings-distill-due',
+    'low',
+    'high',
+    'LEARNINGS.md due for distillation',
+    `docs/LEARNINGS.md is ${distill.lines} lines (>500) — promote evergreen rules to GOLDEN_RULES.md and mark superseded entries historical (Working Agreement #9).`,
     [],
   );
 }

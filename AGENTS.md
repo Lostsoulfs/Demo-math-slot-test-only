@@ -122,6 +122,15 @@ npm run smoke:browser  # Playwright boot and console-error smoke
    audit check (`deviations-section`) enforces the section's presence; honesty
    about its content is on the author. (ADR-0017; portable — copy this rule
    verbatim to other repos.)
+9. **Memory is retrieved at point of use, and distilled when it bloats.**
+   Reading `docs/LEARNINGS.md` at session start is not enough — before editing
+   a file, grep LEARNINGS for its basename/module (e.g.
+   `grep -in 'audio\|settings' docs/LEARNINGS.md`) and apply what's there.
+   Lessons-learned systems fail at retrieval, not capture. When LEARNINGS
+   exceeds ~500 lines the `learnings-distill-due` audit check nags: run a
+   distillation pass — promote evergreen rules into `GOLDEN_RULES.md`, mark
+   superseded entries historical — as its own operator-reviewed PR, never as a
+   drive-by.
 
 ## Handling untrusted content
 

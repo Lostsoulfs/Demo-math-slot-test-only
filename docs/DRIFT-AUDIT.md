@@ -29,10 +29,16 @@ pass adds semantic "does this claim match the code's meaning" judgement.
   language-agnostic proxy for the cyclomatic/cognitive-complexity gate (full
   AST version: testing-kits `core/complexity`). The report always prints the
   `src/` net line delta so bloat is visible at a glance.
-- **Documentation drift:** `src/` changed but `docs/LEARNINGS.md` not updated.
+- **Documentation drift:** `src/` changed but `docs/LEARNINGS.md` not updated;
+  `docs/LEARNINGS.md` over ~500 lines (`learnings-distill-due` — a low-severity
+  nag to run the Working Agreement #9 distillation pass, never a gate).
 - **Unlogged changes:** files not named in any commit message or PR body.
 - **Scope creep / phantom claims** (semantic, in-session).
-- **Build/lint health** in CI.
+- **Build/lint health** in CI — which includes the repo's **footgun lint
+  rules** (`eslint.config.js`, `no-restricted-syntax`): known Pixi v8 traps
+  (plain `'pointermove'` for drags, plain-object `generateTexture` frame) and
+  the `src/persist.js` localStorage firewall. Lessons from `docs/LEARNINGS.md`
+  promoted to executable checks; each rule cites its dated LEARNINGS entry.
 
 ## Auto-fix policy (report + auto-fix the clear ones)
 
@@ -101,3 +107,9 @@ only via a Scott-audited PR — the retro never edits checks, severities,
 thresholds, or workflows; (2) the auto-fix class (prettier / eslint --fix)
 never expands autonomously — widening it requires its own ADR; (3) the
 retro is propose-only and manually invoked — no scheduled self-tuning.
+
+**Retro cadence (set 2026-06-11):** run `/audit-retro` once
+`docs/audit-history.ndjson` covers ≥5 PRs, then after each subsequent
+merge window. Adopt at most **one** loop change per retro cycle and let the
+next history window measure it before adding another — single countermeasure
+per cycle (Toyota-kata), or we can't tell which change worked.

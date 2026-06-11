@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { CHECK_IDS, checkDeviationSection, historyLine, hasHead } from '../scripts/audit-lib.mjs';
+import {
+  CHECK_IDS,
+  checkDeviationSection,
+  historyLine,
+  hasHead,
+  learningsDistillDue,
+} from '../scripts/audit-lib.mjs';
 
 // =====================================================================
 // The audit's own load-bearing logic (ADR-0017). checkDeviationSection
@@ -115,9 +121,34 @@ describe('hasHead', () => {
   });
 });
 
+describe('learningsDistillDue', () => {
+  const doc = (lines) => Array.from({ length: lines }, (_, i) => `line ${i}`).join('\n');
+
+  it('is quiet at or under the limit', () => {
+    expect(learningsDistillDue(doc(500))).toBeNull();
+    expect(learningsDistillDue(doc(463))).toBeNull();
+  });
+
+  it('fires once over the limit and reports the line count', () => {
+    expect(learningsDistillDue(doc(501))).toEqual({ lines: 501 });
+    expect(learningsDistillDue(doc(640))).toEqual({ lines: 640 });
+  });
+
+  it('tolerates missing/empty input (file not found reads as "")', () => {
+    expect(learningsDistillDue('')).toBeNull();
+    expect(learningsDistillDue(null)).toBeNull();
+    expect(learningsDistillDue(undefined)).toBeNull();
+  });
+
+  it('honors a custom limit', () => {
+    expect(learningsDistillDue(doc(11), 10)).toEqual({ lines: 11 });
+    expect(learningsDistillDue(doc(10), 10)).toBeNull();
+  });
+});
+
 describe('CHECK_IDS', () => {
-  it('is the canonical 12-check list with unique ids', () => {
-    expect(CHECK_IDS).toHaveLength(12);
+  it('is the canonical 13-check list with unique ids', () => {
+    expect(CHECK_IDS).toHaveLength(13);
     expect(new Set(CHECK_IDS).size).toBe(CHECK_IDS.length);
     expect(CHECK_IDS).toContain('deviations-section');
   });

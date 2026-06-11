@@ -75,3 +75,8 @@ The distilled cheat-sheet for working in this repo, derived from this repo's
     Re-read the rules and start fresh sooner rather than riding one long context —
     persistence is the repo files, not memory.
     _(AGENTS · Working Agreement)_
+17. **Memory hygiene** — grep `docs/LEARNINGS.md` for the module you're about to
+    edit, at the moment you edit it (retrieval fails, not capture); when the
+    `learnings-distill-due` check nags (>500 lines), distill evergreen rules
+    into this file via an operator-reviewed PR.
+    _(AGENTS · Working Agreement §9)_

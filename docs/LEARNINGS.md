@@ -4,9 +4,44 @@ Running log of useful discoveries, gotchas, and workarounds for this repo.
 **Read this before starting work; append to it (newest at top) when you learn
 something.** Include the date and enough context to be useful later.
 
+Also: **grep this file for the module you're about to edit, at the moment you
+edit it** (Working Agreement #9 — retrieval at point of use). Past ~500 lines
+the `learnings-distill-due` audit check nags for a distillation pass: promote
+evergreen rules to `GOLDEN_RULES.md`, mark superseded entries historical.
+
 ---
 
 ## 2026-06-11
+
+- **Post-#23 MoE retro → memory-hygiene loop changes (Scott-approved, ranked).**
+  A 6-lens review (agent-memory research, NASA LLIS, SRE postmortems,
+  regression-test culture, automation bias, Toyota kata) concluded our loop is
+  capture-strong but **retrieval- and executability-weak**. Changes landed:
+  - **Footgun lint rules** (`eslint.config.js`, `no-restricted-syntax` /
+    `no-restricted-globals`): Pixi v8 plain-`'pointermove'` drags, plain-object
+    `generateTexture` frame, and localStorage outside `src/persist.js`. Zero
+    hits at introduction (verified); each rule cites its dated LEARNINGS entry.
+    **Deviation from the ranked proposal:** these were planned as
+    `audit-drift.mjs` scans but landed as ESLint rules — AST selectors can't
+    false-positive on comments/strings, they fire at dev time AND in CI lint,
+    and the auditor inherits them via its `lint-fail` check anyway. Flat-config
+    gotcha: overlapping blocks REPLACE a rule's options (no merge), so
+    `persist.js`'s exemption needs the pixi selectors repeated in both blocks,
+    not split across them.
+  - **`learnings-distill-due` audit check** (id in `CHECK_IDS`, pure helper
+    `learningsDistillDue` in `audit-lib.mjs`, unit-tested): nags (low sev,
+    never gates) when this file passes ~500 lines — distill evergreen rules to
+    `GOLDEN_RULES.md`, mark superseded entries historical. NASA's
+    lessons-learned failure mode is retrieval, not capture; an append-only log
+    decays into a junk drawer.
+  - **Working Agreement #9** (+ GOLDEN_RULES #17 + this file's header): grep
+    LEARNINGS for the module **at the moment you edit it**, not just at session
+    start.
+  - **Retro cadence** (DRIFT-AUDIT.md): `/audit-retro` once history ≥5 PRs;
+    at most ONE loop change per retro cycle so the next window can measure it.
+  - **Accepted gaps got issues**: #24 (jackpot chips don't theme, ex-F8), #25
+    (theme-switch mid-bonus pop, ex-F4) — deferred work in PR prose is where
+    it goes to die.
 
 - **Spokey horror theme + Settings/Paytable + ambient dread (PR 1 of 2).** Added
   a 5th `spokey` theme preset (dark-but-colorful) with cabinet chrome, a

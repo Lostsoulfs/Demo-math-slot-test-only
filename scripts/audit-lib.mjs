@@ -16,6 +16,7 @@ export const CHECK_IDS = [
   'deep-nesting',
   'growth-no-tests',
   'learnings-stale',
+  'learnings-distill-due',
   'unlogged-files',
   'deviations-section',
   'lint-fail',
@@ -36,6 +37,18 @@ export function checkDeviationSection(body) {
   const next = rest.search(/^##\s/m);
   const content = (next === -1 ? rest : rest.slice(0, next)).trim();
   return content ? null : { reason: 'empty' };
+}
+
+// Memory hygiene (Working Agreement #9): an append-only lessons log decays
+// into a junk drawer — NASA's LLIS failure mode is retrieval, not capture.
+// Past ~500 lines, LEARNINGS.md is due for a distillation pass (promote
+// evergreen rules to GOLDEN_RULES.md, mark superseded entries historical).
+// Returns { lines } when due, else null. Low severity by design: a nag,
+// never a gate — the distillation itself is a Scott-gated content pass.
+export function learningsDistillDue(text, limit = 500) {
+  if (!text) return null;
+  const lines = text.split('\n').length;
+  return lines > limit ? { lines } : null;
 }
 
 // One docs/audit-history.ndjson line (ends with \n). Findings are

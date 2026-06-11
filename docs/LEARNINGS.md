@@ -8,6 +8,21 @@ something.** Include the date and enough context to be useful later.
 
 ## 2026-06-11
 
+- **Post-#20 verification + history repair.** Codex's hardening pass (#20) was
+  verified clean: zero math files touched, 94/94 green, 12M-spin headline
+  `0.96081525` exact `===`, lint/build green, main CI #90 success — and CI is
+  now STRICTER (mutation probe gates, `test:proof`, browser-smoke, CodeQL,
+  dependency-review, Node 24). Two doc dings repaired here: (1) #20's blanket
+  old-name find/replace corrupted the append-only rename entry into "renamed
+  X → X" — restored the original text (repairing corrupted history ≠
+  rewriting history); (2) ADR-0012 was deleted outright in the privacy scrub,
+  breaking the append-only ADR chain (index jumped 0011→0013) — recreated as
+  a content-free TOMBSTONE (number + removal record, deliberately no detail,
+  so the scrub holds) and re-indexed as "Removed". Also fixed our own miss:
+  ADR-0015/0016 were never added to the README index in #18/#19. Lessons:
+  blanket find/replace is the enemy of append-only logs — scope renames to
+  living docs; and "delete for privacy" still gets a tombstone, because a
+  numbering gap reads as a mistake while a tombstone reads as a decision.
 - **Smoke's first CI run failed on a latent test race, not game code (990→975).**
   On the GitHub runner the slow software-WebGL boot exceeded `idleToAttractMs`
   BEFORE verify.mjs's keepAwake interval started → attract engaged →
@@ -56,11 +71,11 @@ something.** Include the date and enough context to be useful later.
   12M headline are `===`-identical through the registry path; 107/107 green.
   Adding a feature is now: pure module + `registerFeature` + one renderer-map
   entry.
-- **Repo renamed `Demo-math-slot-test-only` → `Demo-math-slot-test-only` (Scott, 2026-06-11).**
+- **Repo renamed `replit-code` → `Demo-math-slot-test-only` (Scott, 2026-06-11).**
   Git remotes keep working (GitHub redirects), and the deployed app survives
   because `vite.config.js` uses `base: './'` — but **GitHub Pages URLs do NOT
   redirect**, so the README's live-demo link was dead until re-pointed at
-  `lostsoulfs.github.io/Demo-math-slot-test-only/`. ADR-0012's "Demo-math-slot-test-only"
+  `lostsoulfs.github.io/Demo-math-slot-test-only/`. ADR-0012's "replit-code"
   mention is a historical quote — left as-is (decision records keep their
   history). Lesson: after a repo rename, grep for the old name — Pages links
   and badges are the silent breakage.

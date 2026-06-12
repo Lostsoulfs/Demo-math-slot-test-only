@@ -1,12 +1,12 @@
-import { chromium } from "playwright";
-import { mkdir } from "node:fs/promises";
+import { chromium } from 'playwright';
+import { mkdir } from 'node:fs/promises';
 
-const url = process.env.SMOKE_URL || "http://127.0.0.1:4173/?debug=1";
+const url = process.env.SMOKE_URL || 'http://127.0.0.1:4173/?debug=1';
 const plantedBad =
   process.env.SMOKE_PLANTED_BAD ||
-  process.argv.find((arg) => arg.startsWith("--planted-bad="))?.split("=")[1] ||
-  "";
-const artifactDir = "artifacts/playwright";
+  process.argv.find((arg) => arg.startsWith('--planted-bad='))?.split('=')[1] ||
+  '';
+const artifactDir = 'artifacts/playwright';
 await mkdir(artifactDir, { recursive: true });
 
 const browser = await chromium.launch(
@@ -19,14 +19,14 @@ const page = await browser.newPage({
 const errors = [];
 const checks = [];
 
-page.on("console", (message) => {
-  if (message.type() === "error") errors.push(message.text());
+page.on('console', (message) => {
+  if (message.type() === 'error') errors.push(message.text());
 });
-page.on("pageerror", (error) => errors.push(`PAGEERROR: ${error.message}`));
+page.on('pageerror', (error) => errors.push(`PAGEERROR: ${error.message}`));
 
-function check(name, ok, detail = "") {
+function check(name, ok, detail = '') {
   checks.push({ name, ok });
-  console.log(`${ok ? "PASS" : "FAIL"} ${name}${detail ? ` — ${detail}` : ""}`);
+  console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ` — ${detail}` : ''}`);
 }
 
 async function screenshot(name) {
@@ -36,7 +36,7 @@ async function screenshot(name) {
 async function readSlotState() {
   return page.evaluate(() => ({
     hasSlot: !!window.__slot,
-    hasCanvas: !!document.querySelector("canvas"),
+    hasCanvas: !!document.querySelector('canvas'),
     hasUi: !!window.__slot?.ui?.root,
     hasSettings: !!window.__slot?.settings,
     hasPaytable: !!window.__slot?.paytable,
@@ -44,20 +44,19 @@ async function readSlotState() {
     paytableOpen: !!window.__slot?.paytable?.isOpen,
     cabinetVisible: !!window.__slot?.cabinet?.layer?.visible,
     uneaseEnabled: !!window.__slot?.unease?.enabled,
-    hasThemeApi: typeof window.__slot?.applyTheme === "function",
-    hasSettingsApi: typeof window.__slot?.openSettings === "function",
-    hasPaytableApi: typeof window.__slot?.openPaytable === "function",
+    hasThemeApi: typeof window.__slot?.applyTheme === 'function',
+    hasSettingsApi: typeof window.__slot?.openSettings === 'function',
+    hasPaytableApi: typeof window.__slot?.openPaytable === 'function',
   }));
 }
 
 async function injectPlantedBad(mode) {
   if (!mode) return;
   await page.evaluate((fault) => {
-    if (fault === "settings-open") window.__slot.openSettings = () => {};
-    if (fault === "paytable-open") window.__slot.openPaytable = () => {};
-    if (fault === "theme-apply") window.__slot.applyTheme = () => {};
-    if (fault === "console-error")
-      console.error("planted browser-smoke console fault");
+    if (fault === 'settings-open') window.__slot.openSettings = () => {};
+    if (fault === 'paytable-open') window.__slot.openPaytable = () => {};
+    if (fault === 'theme-apply') window.__slot.applyTheme = () => {};
+    if (fault === 'console-error') console.error('planted browser-smoke console fault');
   }, mode);
 }
 
@@ -79,85 +78,69 @@ async function assertModal(name, open, close, isOpen) {
 
 await page.context().tracing.start({ screenshots: true, snapshots: true });
 try {
-  await page.goto(url, { waitUntil: "load", timeout: 30_000 });
-  await page.waitForFunction(() => document.querySelector("canvas"), null, {
-    timeout: 15_000,
-  });
+  await page.goto(url, { waitUntil: 'load', timeout: 30_000 });
+  await page.waitForFunction(() => document.querySelector('canvas'), null, { timeout: 15_000 });
   await page.waitForFunction(() => window.__slot, null, { timeout: 15_000 });
   await page.waitForTimeout(300);
   await injectPlantedBad(plantedBad);
 
   const boot = await readSlotState();
-  check("canvas present", boot.hasCanvas);
-  check("slot debug api present", boot.hasSlot);
-  check("ui root present", boot.hasUi);
+  check('canvas present', boot.hasCanvas);
+  check('slot debug api present', boot.hasSlot);
+  check('ui root present', boot.hasUi);
   check(
-    "settings/paytable api present",
+    'settings/paytable api present',
     boot.hasSettingsApi && boot.hasPaytableApi && boot.hasThemeApi,
   );
-  await screenshot("smoke-boot");
+  await screenshot('smoke-boot');
 
-  await page.evaluate(() => window.__slot.applyTheme("classic"));
+  await page.evaluate(() => window.__slot.applyTheme('classic'));
   await page.waitForTimeout(100);
   let theme = await readSlotState();
-  check(
-    "classic theme hides spokey chrome",
-    !theme.cabinetVisible && !theme.uneaseEnabled,
-  );
+  check('classic theme hides spokey chrome', !theme.cabinetVisible && !theme.uneaseEnabled);
 
-  await page.evaluate(() => window.__slot.applyTheme("neon"));
+  await page.evaluate(() => window.__slot.applyTheme('neon'));
   await page.waitForTimeout(100);
   theme = await readSlotState();
-  check(
-    "neon theme keeps spokey chrome off",
-    !theme.cabinetVisible && !theme.uneaseEnabled,
-  );
+  check('neon theme keeps spokey chrome off', !theme.cabinetVisible && !theme.uneaseEnabled);
 
-  await page.evaluate(() => window.__slot.applyTheme("spokey"));
+  await page.evaluate(() => window.__slot.applyTheme('spokey'));
   await page.waitForTimeout(150);
   theme = await readSlotState();
-  check(
-    "spokey theme engages cabinet + unease",
-    theme.cabinetVisible && theme.uneaseEnabled,
-  );
-  await screenshot("smoke-theme-spokey");
+  check('spokey theme engages cabinet + unease', theme.cabinetVisible && theme.uneaseEnabled);
+  await screenshot('smoke-theme-spokey');
 
   await assertModal(
-    "settings panel",
-    "openSettings",
-    "",
+    'settings panel',
+    'openSettings',
+    '',
     (state) => state.settingsOpen && !state.paytableOpen,
   );
   await page.evaluate(() => window.__slot.settings.close());
   await page.waitForTimeout(100);
-  check("settings panel closes", !(await readSlotState()).settingsOpen);
+  check('settings panel closes', !(await readSlotState()).settingsOpen);
 
   await assertModal(
-    "paytable panel",
-    "openPaytable",
-    "",
+    'paytable panel',
+    'openPaytable',
+    '',
     (state) => state.paytableOpen && !state.settingsOpen,
   );
   await page.evaluate(() => window.__slot.paytable.close());
   await page.waitForTimeout(100);
-  check("paytable panel closes", !(await readSlotState()).paytableOpen);
+  check('paytable panel closes', !(await readSlotState()).paytableOpen);
 
-  check(
-    "no console errors",
-    errors.length === 0,
-    errors.slice(0, 5).join(" | "),
-  );
+  check('no console errors', errors.length === 0, errors.slice(0, 5).join(' | '));
   const allOk = checks.every((item) => item.ok);
 
   if (plantedBad) {
-    if (allOk)
-      throw new Error(`planted browser-smoke fault survived: ${plantedBad}`);
+    if (allOk) throw new Error(`planted browser-smoke fault survived: ${plantedBad}`);
     console.log(`PASS planted fault killed: ${plantedBad}`);
   } else if (!allOk) {
     const failed = checks
       .filter((item) => !item.ok)
       .map((item) => item.name)
-      .join(", ");
+      .join(', ');
     throw new Error(`browser smoke failed checks: ${failed}`);
   }
 

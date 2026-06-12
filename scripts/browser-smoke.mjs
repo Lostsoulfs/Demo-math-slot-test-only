@@ -12,7 +12,10 @@ await mkdir(artifactDir, { recursive: true });
 const browser = await chromium.launch(
   process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {},
 );
-const page = await browser.newPage({ viewport: { width: 800, height: 1000 }, deviceScaleFactor: 1 });
+const page = await browser.newPage({
+  viewport: { width: 800, height: 1000 },
+  deviceScaleFactor: 1,
+});
 const errors = [];
 const checks = [];
 
@@ -114,7 +117,12 @@ try {
   await page.waitForTimeout(100);
   check('settings panel closes', !(await readSlotState()).settingsOpen);
 
-  await assertModal('paytable panel', 'openPaytable', '', (state) => state.paytableOpen && !state.settingsOpen);
+  await assertModal(
+    'paytable panel',
+    'openPaytable',
+    '',
+    (state) => state.paytableOpen && !state.settingsOpen,
+  );
   await page.evaluate(() => window.__slot.paytable.close());
   await page.waitForTimeout(100);
   check('paytable panel closes', !(await readSlotState()).paytableOpen);
@@ -126,7 +134,10 @@ try {
     if (allOk) throw new Error(`planted browser-smoke fault survived: ${plantedBad}`);
     console.log(`PASS planted fault killed: ${plantedBad}`);
   } else if (!allOk) {
-    const failed = checks.filter((item) => !item.ok).map((item) => item.name).join(', ');
+    const failed = checks
+      .filter((item) => !item.ok)
+      .map((item) => item.name)
+      .join(', ');
     throw new Error(`browser smoke failed checks: ${failed}`);
   }
 

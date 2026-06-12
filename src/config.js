@@ -193,9 +193,9 @@ export const UNEASE = {
 export const STORAGE_KEY = 'coinsHoldWin.settings.v1';
 
 // ---- Theme presets (live-switchable via the debug panel) ----
-// Each preset overrides keys on COLORS, then the scene repaints the
-// background gradient, reel frame, godrays and glow accents. Baked symbol
-// art is unchanged (full symbol reskin is a separate task).
+// Each preset overrides keys on COLORS, then the scene repaints the background
+// gradient, reel frame, HUD chrome, jackpot ladder, godrays and glow accents.
+// Baked symbol art is unchanged (full symbol reskin is a separate task).
 export const THEMES = {
   classic: {
     bgTop: 0x12306e,
@@ -205,6 +205,10 @@ export const THEMES = {
     coin: 0xffcf3f,
     win: 0xffe14d,
     ray: 0x4f7bd6,
+    jackpotMini: 0x69d0ff,
+    jackpotMinor: 0x7bff8a,
+    jackpotMajor: 0xff8ad0,
+    jackpotGrand: 0xff5a3c,
   },
   neon: {
     bgTop: 0x1a0b3d,
@@ -214,6 +218,10 @@ export const THEMES = {
     coin: 0xff36c4,
     win: 0x4dfff0,
     ray: 0xb02bff,
+    jackpotMini: 0x36f0ff,
+    jackpotMinor: 0x4dfff0,
+    jackpotMajor: 0xff36c4,
+    jackpotGrand: 0xfff04d,
   },
   mystical: {
     bgTop: 0x14324a,
@@ -223,6 +231,10 @@ export const THEMES = {
     coin: 0x6fe3c8,
     win: 0xffe08a,
     ray: 0x2f7d8a,
+    jackpotMini: 0x6fe3c8,
+    jackpotMinor: 0xa1f0a6,
+    jackpotMajor: 0xc7a2ff,
+    jackpotGrand: 0xffe08a,
   },
   sunset: {
     bgTop: 0x6e1f3a,
@@ -232,6 +244,10 @@ export const THEMES = {
     coin: 0xff8a3c,
     win: 0xffd25a,
     ray: 0xff6a4f,
+    jackpotMini: 0xffb86a,
+    jackpotMinor: 0xffe08a,
+    jackpotMajor: 0xff6a4f,
+    jackpotGrand: 0xff3c6a,
   },
   // "Spokey" — a dark-but-colorful horror skin. Behaves like a normal slot;
   // the unease (vignette, flicker, a distant watcher) is gated to the Hold &
@@ -247,6 +263,10 @@ export const THEMES = {
     coin: 0xc8412a, // ember accent
     win: 0xc69a3a, // tarnished gold
     ray: 0x3a1f2a, // dim crimson godrays
+    jackpotMini: 0x6e7f53,
+    jackpotMinor: 0xc69a3a,
+    jackpotMajor: 0xc8412a,
+    jackpotGrand: 0x8a2f22,
     // Spokey-only chrome colors:
     fog: 0x0a0f14,
     cabinet: 0x120a10,

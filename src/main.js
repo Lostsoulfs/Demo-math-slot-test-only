@@ -175,6 +175,7 @@ import { tween, wait, Ease } from './utils.js';
       .roundRect(fx + 6, fy + 6, fw - 12, fh - 12, 22)
       .stroke({ color: COLORS.frameGoldDark, width: 4 });
     frameGlow.color = COLORS.coin;
+    banner.style.fill = COLORS.win;
     bannerGlow.color = COLORS.coin;
   }
 
@@ -198,6 +199,7 @@ import { tween, wait, Ease } from './utils.js';
     const spooky = name === 'spokey';
     unease.setEnabled(spooky);
     if (ui) {
+      ui.applyTheme();
       // the cabinet supplies its own marquee + LED readout under Spokey
       ui.setTitleVisible(!spooky);
       ui.setReadoutVisible(!spooky);
@@ -575,6 +577,8 @@ import { tween, wait, Ease } from './utils.js';
     repaint() {
       paintBackground();
       paintFrame();
+      ui.applyTheme();
+      cabinet.paint(activeTheme);
     },
 
     // run the bonus scene directly (no spin), used by verify.mjs

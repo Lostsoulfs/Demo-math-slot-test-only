@@ -9,6 +9,8 @@ import { DESIGN, COLORS, ECONOMY, JACKPOTS, JACKPOT_ORDER } from './config.js';
 import { fmt } from './utils.js';
 import { audio } from './audio.js';
 
+const JACKPOT_CHIP = { w: 240, h: 64, radius: 14 };
+
 function label(text, size, fill, weight = '700') {
   return new Text({
     text,
@@ -36,9 +38,13 @@ class Button extends Container {
     this.addChild(this.bg);
     this._draw(1);
     if (glow) {
-      this.filters = [
-        new GlowFilter({ color: glow, distance: 16, outerStrength: 2, quality: 0.2 }),
-      ];
+      this._glowFilter = new GlowFilter({
+        color: glow,
+        distance: 16,
+        outerStrength: 2,
+        quality: 0.2,
+      });
+      this.filters = [this._glowFilter];
     }
     this.on('pointerdown', () => {
       this.scale.set(0.94);
@@ -62,6 +68,12 @@ class Button extends Container {
       .fill({ color: this._fill, alpha })
       .stroke({ color: this._stroke, width: 4, alpha });
   }
+  setChrome({ fill = this._fill, stroke = this._stroke, glow } = {}) {
+    this._fill = fill;
+    this._stroke = stroke;
+    this._draw();
+    if (this._glowFilter && glow !== undefined) this._glowFilter.color = glow;
+  }
   setDisabled(d) {
     this.disabledState = d;
     this.alpha = d ? 0.45 : 1;
@@ -75,6 +87,7 @@ export class UI {
     this.handlers = handlers;
     this.root = new Container();
     this.betIndex = ECONOMY.defaultBetIndex;
+    this._autoActive = false;
 
     this._buildJackpotLadder();
     this._buildTitle();
@@ -85,13 +98,26 @@ export class UI {
     return ECONOMY.betLevels[this.betIndex];
   }
 
+  _secondaryButtonFill() {
+    return COLORS.bgTop ?? 0x16306e;
+  }
+
+  _jackpotColor(kind) {
+    const key = `jackpot${kind[0]}${kind.slice(1).toLowerCase()}`;
+    return COLORS[key] ?? JACKPOTS[kind].color;
+  }
+
   _buildTitle() {
     const t = label('COINS: HOLD & WIN', 46, COLORS.frameGold, '900');
     t.anchor.set(0.5);
     t.position.set(DESIGN.width / 2, 60);
-    t.filters = [
-      new GlowFilter({ color: COLORS.coin, distance: 14, outerStrength: 2, quality: 0.2 }),
-    ];
+    this.titleGlow = new GlowFilter({
+      color: COLORS.coin,
+      distance: 14,
+      outerStrength: 2,
+      quality: 0.2,
+    });
+    t.filters = [this.titleGlow];
     this.titleText = t;
     this.root.addChild(t);
   }
@@ -109,20 +135,16 @@ export class UI {
   _buildJackpotLadder() {
     this.jackpotChips = {};
     const order = JACKPOT_ORDER;
-    const chipW = 240,
-      chipH = 64,
-      gap = 16;
+    const { w: chipW, h: chipH } = JACKPOT_CHIP;
+    const gap = 16;
     const totalW = order.length * chipW + (order.length - 1) * gap;
     let x = (DESIGN.width - totalW) / 2;
     const y = 140;
     for (const kind of order) {
-      const jp = JACKPOTS[kind];
+      const color = this._jackpotColor(kind);
       const chip = new Container();
-      const g = new Graphics()
-        .roundRect(0, 0, chipW, chipH, 14)
-        .fill({ color: 0x0a1330 })
-        .stroke({ color: jp.color, width: 3 });
-      const name = label(kind, 22, jp.color, '900');
+      const g = new Graphics();
+      const name = label(kind, 22, color, '900');
       name.anchor.set(0, 0.5);
       name.position.set(16, chipH / 2);
       const val = label('', 26, COLORS.textWhite, '800');
@@ -130,13 +152,86 @@ export class UI {
       val.position.set(chipW - 16, chipH / 2);
       chip.addChild(g, name, val);
       chip.position.set(x, y);
-      chip.filters = [
-        new GlowFilter({ color: jp.color, distance: 8, outerStrength: 1, quality: 0.15 }),
-      ];
+      const glow = new GlowFilter({ color, distance: 8, outerStrength: 1, quality: 0.15 });
+      chip.filters = [glow];
       this.root.addChild(chip);
-      this.jackpotChips[kind] = { val, chip };
+      this.jackpotChips[kind] = { val, chip, bg: g, name, glow };
+      this._paintJackpotChip(kind);
       x += chipW + gap;
     }
+  }
+
+  _paintJackpotChip(kind) {
+    const entry = this.jackpotChips[kind];
+    if (!entry) return;
+    const color = this._jackpotColor(kind);
+    const { w, h, radius } = JACKPOT_CHIP;
+    entry.bg.clear();
+    entry.bg
+      .roundRect(0, 0, w, h, radius)
+      .fill({ color: COLORS.reelWell ?? 0x0a1330 })
+      .stroke({ color, width: 3 });
+    entry.name.style.fill = color;
+    entry.val.style.fill = COLORS.textWhite;
+    entry.glow.color = color;
+  }
+
+  applyTheme() {
+    if (this.titleText) this.titleText.style.fill = COLORS.frameGold;
+    if (this.titleGlow) this.titleGlow.color = COLORS.coin;
+
+    this.balanceText.style.fill = COLORS.textWhite;
+    this.winText.style.fill = COLORS.win;
+    this.betValueText.style.fill = COLORS.frameGold;
+    this.betCap.style.fill = COLORS.textWhite;
+
+    this.spinLabel.style.fill = COLORS.textWhite;
+    this.spinBtn.setChrome({
+      fill: COLORS.frameGoldDark,
+      stroke: COLORS.frameGold,
+      glow: COLORS.coin,
+    });
+
+    for (const button of [
+      this.betMinus,
+      this.betPlus,
+      this.muteBtn,
+      this.settingsBtn,
+      this.infoBtn,
+    ]) {
+      button.setChrome({ fill: this._secondaryButtonFill(), stroke: COLORS.frameGold });
+      if (button._label) button._label.style.fill = COLORS.textWhite;
+    }
+    this.setAutoActive(this._autoActive);
+
+    for (const kind of JACKPOT_ORDER) this._paintJackpotChip(kind);
+  }
+
+  getThemeDiagnostics() {
+    return {
+      titleFill: this.titleText?.style.fill,
+      titleGlow: this.titleGlow?.color,
+      balanceFill: this.balanceText?.style.fill,
+      winFill: this.winText?.style.fill,
+      betFill: this.betValueText?.style.fill,
+      spinFill: this.spinBtn?._fill,
+      spinStroke: this.spinBtn?._stroke,
+      spinGlow: this.spinBtn?._glowFilter?.color,
+      jackpots: Object.fromEntries(
+        JACKPOT_ORDER.map((kind) => {
+          const entry = this.jackpotChips[kind];
+          return [
+            kind,
+            {
+              stroke: this._jackpotColor(kind),
+              nameFill: entry?.name?.style.fill,
+              valueFill: entry?.val?.style.fill,
+              glow: entry?.glow?.color,
+            },
+          ];
+        }),
+      ),
+    };
   }
 
   _buildPanel() {
@@ -163,10 +258,10 @@ export class UI {
       glow: COLORS.coin,
       onTap: () => this.handlers.onSpin(),
     });
-    const spinLabel = label('SPIN', 42, COLORS.textWhite, '900');
-    spinLabel.anchor.set(0.5);
-    spinLabel.position.set(105, 105);
-    this.spinBtn.addChild(spinLabel);
+    this.spinLabel = label('SPIN', 42, COLORS.textWhite, '900');
+    this.spinLabel.anchor.set(0.5);
+    this.spinLabel.position.set(105, 105);
+    this.spinBtn.addChild(this.spinLabel);
     this.spinBtn.position.set(DESIGN.width / 2, ctrlY);
     this.root.addChild(this.spinBtn);
 
@@ -178,10 +273,10 @@ export class UI {
     this.betValueText = label('', 40, COLORS.frameGold, '900');
     this.betValueText.anchor.set(0.5);
     this.betValueText.position.set(215, ctrlY - 95);
-    const betCap = label('BET', 22, COLORS.textWhite, '700');
-    betCap.anchor.set(0.5);
-    betCap.position.set(215, ctrlY - 135);
-    this.root.addChild(this.betMinus, this.betPlus, this.betValueText, betCap);
+    this.betCap = label('BET', 22, COLORS.textWhite, '700');
+    this.betCap.anchor.set(0.5);
+    this.betCap.position.set(215, ctrlY - 135);
+    this.root.addChild(this.betMinus, this.betPlus, this.betValueText, this.betCap);
 
     // AUTO + SOUND (right cluster, stacked)
     this.autoBtn = this._wideBtn('AUTO', () => this.handlers.onAuto());
@@ -208,7 +303,7 @@ export class UI {
       w: 76,
       h: 76,
       radius: 20,
-      fill: 0x16306e,
+      fill: this._secondaryButtonFill(),
       stroke: COLORS.frameGold,
       onTap,
     });
@@ -216,6 +311,7 @@ export class UI {
     t.anchor.set(0.5);
     t.position.set(38, 38);
     b.addChild(t);
+    b._label = t;
     return b;
   }
 
@@ -224,7 +320,7 @@ export class UI {
       w: 90,
       h: 90,
       radius: 20,
-      fill: 0x16306e,
+      fill: this._secondaryButtonFill(),
       stroke: COLORS.frameGold,
       onTap,
     });
@@ -232,6 +328,7 @@ export class UI {
     t.anchor.set(0.5);
     t.position.set(45, 42);
     b.addChild(t);
+    b._label = t;
     return b;
   }
 
@@ -240,7 +337,7 @@ export class UI {
       w: 200,
       h: 56,
       radius: 16,
-      fill: 0x16306e,
+      fill: this._secondaryButtonFill(),
       stroke: COLORS.frameGold,
       onTap,
     });
@@ -261,9 +358,13 @@ export class UI {
   }
 
   setAutoActive(active) {
+    this._autoActive = active;
     this.autoBtn._label.text = active ? 'STOP' : 'AUTO';
-    this.autoBtn._fill = active ? 0x7a1530 : 0x16306e;
-    this.autoBtn._draw();
+    this.autoBtn._label.style.fill = COLORS.textWhite;
+    this.autoBtn.setChrome({
+      fill: active ? 0x7a1530 : this._secondaryButtonFill(),
+      stroke: COLORS.frameGold,
+    });
   }
 
   setMuted(muted) {

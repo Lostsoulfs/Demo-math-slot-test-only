@@ -91,3 +91,18 @@ npm run build
 npm run preview &      # serve on :4173
 node verify.mjs        # loads the page, spins, runs the bonus, screenshots, checks for console errors
 ```
+
+## Repo map (the six-slot model)
+
+The same skeleton repeats across the connected repos — **rules → memory →
+decisions → agent-tooling → verification → product**. This repo's job is to
+_prove the slot math is honest_ (play-money, no real wagering, nothing certified):
+
+- **Rules** — `AGENTS.md` (contract) · `CLAUDE.md` (pointer) · `GOLDEN_RULES.md` (cheat-sheet) · `SECURITY.md` · `DISCLAIMER.md` (no-certification wording).
+- **Memory** — `docs/LEARNINGS.md` (+ archive) · `docs/kb/` (per-agent journal) · `docs/audit-history.ndjson` (the auditor's own memory).
+- **Decisions** — `docs/adr/` (the "why" trail) · `docs/SPEC.md` (what) · `docs/PAR-SHEET.md` (the RTP math model).
+- **Agent tooling** — `.claude/` (auditor/explorer/planner roles · slash-commands · hooks).
+- **Verification** — `npm run test:proof` (RTP/RNG proofs) · `npm run mutation` (payout-logic mutants) · `scripts/audit-drift.mjs` (claims-vs-diff) · `npm run smoke:browser` · `.github/workflows/` + the secret/PII gate. The deep audit is **operator-triggered** (the human says "audit").
+- **Product** — `src/` (the Pixi slot frontend); `src/outcome.js` (pure-RNG result) + `src/holdAndWin.js` (the RTP engine — the feature carries most of the payback).
+
+Plain-language **and** technical walk-through: [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md).

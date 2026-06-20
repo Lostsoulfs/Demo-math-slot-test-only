@@ -32,9 +32,9 @@ ESLint/Prettier + Playwright + WebAudio. Sheets are created **as facts are verif
 `TEMPLATE.md`, add the row here, fill from real runs (no fabrication, no importing another
 repo's stack sheets).
 
-| Sheet                                | Covers                                               | Pinned at                  |
-| ------------------------------------ | ---------------------------------------------------- | -------------------------- |
-| [agent-interop.md](agent-interop.md) | A2A Agent Card + MCP tool-defs — this repo's surface | A2A 0.3.x / MCP 2025-06-18 |
+| Sheet                                | Covers                                               | Pinned at                 |
+| ------------------------------------ | ---------------------------------------------------- | ------------------------- |
+| [agent-interop.md](agent-interop.md) | A2A Agent Card + MCP tool-defs — this repo's surface | A2A v1.0 / MCP 2025-06-18 |
 
 _More stack sheets created on first verified gotcha (candidates: pixi-8, vite, vitest, eslint, webaudio)._
 

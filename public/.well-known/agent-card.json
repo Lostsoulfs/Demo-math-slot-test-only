@@ -1,9 +1,8 @@
 {
-  "protocolVersion": "0.3.0",
   "name": "coins-hold-and-win-math",
-  "description": "Static A2A discovery card for the deterministic slot-math capabilities of the Coins: Hold & Win play-money demo (no real money, no accounts, no AI/LLM runtime). NO LIVE A2A ENDPOINT YET: this is a phase-A discovery card; the skills below describe deterministic functions runnable from this repo's source (src/slotmath.js). See STATUS.md and docs/adr/0019-agent-interop-static-surface.md.",
+  "description": "Static A2A discovery card for the deterministic slot-math capabilities of the Coins: Hold & Win play-money demo (no real money, no accounts, no AI/LLM runtime). NO LIVE A2A ENDPOINT YET: this is a phase-A discovery card; the `url` points to the project repository, not a live JSON-RPC A2A endpoint (none exists in phase A). The skills below describe deterministic functions runnable from this repo's source (src/slotmath.js). See STATUS.md and docs/adr/0019-agent-interop-static-surface.md.",
   "version": "0.1.0",
-  "url": "https://lostsoulfs.github.io/Demo-math-slot-test-only/",
+  "url": "https://github.com/Lost-secuirty/Demo-math-slot-test-only",
   "documentationUrl": "https://github.com/Lost-secuirty/Demo-math-slot-test-only/blob/main/STATUS.md",
   "capabilities": {
     "streaming": false,

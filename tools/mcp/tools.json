@@ -24,8 +24,13 @@
           "houseEdge": { "type": "number" },
           "hitFrequencyPerLine": { "type": "number" },
           "sdPerLine": { "type": "number" },
+          "jackpotProb": { "type": "number" },
           "jackpotOneIn": { "type": "number" },
-          "nLines": { "type": "integer" }
+          "nLines": { "type": "integer" },
+          "symbolProbabilities": {
+            "type": "object",
+            "description": "Map of symbol id -> probability."
+          }
         },
         "required": ["perLineRtp", "lineRtp", "houseEdge", "nLines"]
       }
@@ -64,9 +69,14 @@
           "lineRtp": { "type": "number" },
           "bonusRtp": { "type": "number" },
           "hitFrequency": { "type": "number" },
+          "bonusTriggerRate": { "type": "number" },
           "bonusTriggerOneIn": { "type": "number" },
+          "grandRate": { "type": "number" },
+          "maxWin": { "type": "number" },
+          "sd": { "type": "number" },
           "ci95Low": { "type": "number" },
-          "ci95High": { "type": "number" }
+          "ci95High": { "type": "number" },
+          "ci95HalfwidthPp": { "type": "number" }
         },
         "required": ["rtp", "ci95Low", "ci95High", "spins", "seed"]
       }

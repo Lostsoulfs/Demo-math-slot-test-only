@@ -1,6 +1,6 @@
 # A2A + MCP agent-interop — crib sheet
 
-> Pinned at: A2A Agent Card schema `0.3.x` · MCP spec `2025-06-18` · Last verified: `2026-06-19` · Maintainer: `claude`
+> Pinned at: A2A spec `v1.0` · MCP spec `2025-06-18` · Last verified: `2026-06-19` · Maintainer: `claude`
 
 How this repo exposes its deterministic capabilities to agents, and the minimum facts to
 consume or extend that surface. Read before touching the Agent Card or the MCP tool-defs.
@@ -28,9 +28,12 @@ consume or extend that surface. Read before touching the Agent Card or the MCP t
 - `[claude · 2026-06-19 · VERIFIED]` GitHub Pages serves this project under the subpath
   `/Demo-math-slot-test-only/`, so the card sits at `<pages>/Demo-math-slot-test-only/.well-known/agent-card.json`,
   not the domain root — canonical RFC 8615 root discovery would need a custom domain (deferred).
-- `[claude · 2026-06-19 · SECONDARY]` A2A is at spec v1.0 (Linux Foundation, 2026); sample
-  cards use `protocolVersion` `"0.3.0"`, which we pin — re-verify on a spec bump. MCP
-  (Anthropic) current spec is `2025-06-18`. A2A = agent↔agent; MCP = agent↔tools (complementary).
+- `[claude · 2026-06-19 · VERIFIED]` A2A spec **v1.0 REMOVED the top-level `protocolVersion`**
+  field (CodeRabbit web-check + a2a-protocol.org/latest/whats-new-v1): it moved into
+  `supportedInterfaces[].protocolVersion` as `Major.Minor` (e.g. `"1.0"`; patch versions are not
+  used). This phase-A discovery card targets v1.0 but OMITS `protocolVersion` and
+  `supportedInterfaces` because it declares no live interface yet — both land with a phase-B
+  endpoint. MCP (Anthropic) current spec `2025-06-18`. A2A = agent↔agent; MCP = agent↔tools.
 
 ## Minimal examples
 

@@ -29,7 +29,8 @@
     "docs/kb/agent-interop.md",
     "public/.well-known/agent-card.json",
     "tools/mcp/tools.json",
-    "scripts/agent-card-validate.mjs"
+    "scripts/agent-card-validate.mjs",
+    "docs/CI_AND_LIVE_STATE.md"
   ],
   "required_workflows": [
     "repository-controls",

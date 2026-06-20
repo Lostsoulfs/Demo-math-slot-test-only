@@ -525,3 +525,13 @@ Math.random)`, and animates the events (coin amounts x bet at render time).
 Superseded and older entries remain available in
 [`LEARNINGS-archive.md`](LEARNINGS-archive.md). Moving them out of the hot path
 is a retrieval decision, not a deletion or rewrite of project history.
+
+## 2026-06-20 — CI-state literacy; the CodeRabbit absent-required trap (PR #40)
+
+New governance doc: `docs/CI_AND_LIVE_STATE.md` — the CI-status taxonomy + the
+live-state check. This repo's PR #40 (a Dependabot bump) was the canonical example:
+`mergeStateStatus=BLOCKED` with every check green and zero unresolved threads, because
+the required `CodeRabbit` context never posted (CodeRabbit skips draft/bot PRs by
+default). `@coderabbitai review` posted `CodeRabbit :: success` and it went `CLEAN`.
+Fix: `.coderabbit.yaml` with `auto_review.drafts: true`. A required context with no
+reliable producer is a deadlock, not a gate — diff required-contexts vs what reported.

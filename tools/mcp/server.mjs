@@ -1,10 +1,16 @@
-#!/usr/bin/env node
 // =====================================================================
 // tools/mcp/server.mjs — Phase B (ADR-0020): a local, runnable stdio MCP
 // server that makes this repo's deterministic slot-math callable by an MCP
 // client (Claude Desktop/IDE). It runs in the CALLER's own process over
 // stdio — NO network listener, NO auth, NO secrets. A hosted/public endpoint
 // (A2A or MCP-HTTP) is deferred to phase C (see ADR-0019 / ADR-0020).
+//
+// NOTE: intentionally NO `#!/usr/bin/env node` shebang. This module is also
+// IMPORTED by the in-memory integration test, and Vite/vitest's transform
+// mis-parses a shebang that leads an imported module on Windows ("Invalid or
+// unexpected token"). The `mcp:serve` script and the MCP client config both
+// invoke `node` explicitly — no shebang needed for those paths. A shebang-less
+// file can't double as a Unix `bin`; this package exposes no `bin` entry.
 //
 // Tool names/titles/descriptions are sourced from the static contract
 // `tools/mcp/tools.json` so the live server and the published tool-defs can

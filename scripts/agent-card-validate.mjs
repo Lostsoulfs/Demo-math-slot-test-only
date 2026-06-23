@@ -64,6 +64,13 @@ export function validateAgentSurface({ card, tools, phase, fileExists = () => tr
   // These teeth hold for BOTH phase A and B: streaming / pushNotifications / liveEndpoint track a
   // HOSTED A2A/MCP-HTTP endpoint, which does not exist until phase C — overclaiming one is a lie.
   req(phase != null, 'STATUS.md agent_interop_phase not found');
+  // Fail CLOSED: an unsupported phase value must error, not silently skip every
+  // phase-specific honesty/localMcpServer check below (a typo would disable the gate).
+  // When phase C lands, add it here together with its own honesty rules.
+  req(
+    phase == null || phase === 'A' || phase === 'B',
+    `STATUS.md agent_interop_phase must be "A" or "B" (got ${phase})`,
+  );
   if (phase === 'A' || phase === 'B') {
     req(
       card?.capabilities?.streaming === false,

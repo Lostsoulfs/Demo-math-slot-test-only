@@ -58,6 +58,12 @@ describe.skipIf(!present)('agent-interop surface', () => {
     expect(validateAgentSurface({ card: bad, tools, phase, fileExists }).ok).toBe(false);
   });
 
+  it('fails closed on an unsupported agent_interop_phase (does not silently skip the gate)', () => {
+    // A typo'd/unknown phase must ERROR, not bypass every phase-specific honesty check.
+    expect(validateAgentSurface({ card, tools, phase: 'C', fileExists }).ok).toBe(false);
+    expect(validateAgentSurface({ card, tools, phase: 'b', fileExists }).ok).toBe(false);
+  });
+
   // --- phase-B teeth: the localMcpServer claim must be present, runnable, and not overclaim ---
 
   it('bites when phase B claims a localMcpServer whose entry file is missing on disk', () => {

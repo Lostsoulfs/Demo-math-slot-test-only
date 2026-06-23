@@ -11,6 +11,36 @@ evergreen rules to `GOLDEN_RULES.md`, mark superseded entries historical.
 
 ---
 
+## 2026-06-22 — agent-interop phase B: local stdio MCP server (PR-B1/B2, ADR-0020)
+
+Made the MCP tool-defs genuinely callable via an in-repo **stdio** server
+(`tools/mcp/server.mjs`) wrapping the pure `src/slotmath.js` exports — no HTTP,
+no listener, runs in the caller's process. Hard-won points:
+
+- **SDK v1 vs v2 trap.** Use `@modelcontextprotocol/sdk` (**v1**, `^1.29.0`):
+  `McpServer` from `server/mcp.js`, `StdioServerTransport`, `registerTool` with a
+  raw **`ZodRawShape`** (an object of zod validators, NOT `z.object(...)`). The
+  v2 pre-alpha `@modelcontextprotocol/server` is a different, unstable API — do
+  not mix. Providing `outputSchema` makes the SDK validate `structuredContent`.
+- **stdout is the JSON-RPC frame.** The stdio transport owns stdout; log only to
+  `console.error`. A stray `console.log` corrupts framing.
+- **Lint-glob gap.** `tools/` was outside the `eslint`/mutation `COPY` globs —
+  widen both when adding a linted+imported dir, or the new file silently escapes
+  the security plugin and the mutation baseline ENOENT-fails.
+- **Untrusted `modelOverrides` is a DoS footgun.** It merges straight into
+  `buildModel`, so caller-set `reels`/`rows`/`symbols` hit the exponential
+  enumeration (`symbols^reels`) / per-spin allocation — `{reels:9}` OOM-killed
+  Node; a fractional `{reels:1.5}` infinitely recursed past the `depth===reels`
+  base case. Bound the shape (caps + an enumeration ceiling + `Number.isInteger`)
+  and reject degenerate weights (NaN) BEFORE compute, returning a clean `isError`.
+  Also normalize non-finite output (`Infinity`→omit) so the content-text and
+  `structuredContent` halves agree (`JSON.stringify(Infinity)==='null'`).
+- **Honesty stays orthogonal.** `streaming`/`pushNotifications`/`liveEndpoint`
+  track a HOSTED endpoint (phase C — stay `false`); a new
+  `x-lifecycle.localMcpServer` marks the stdio server. The validator gained a
+  phase-B branch with an injected `fileExists` (kept pure; `main()` passes real
+  `existsSync`) so the gate bites if the card claims a server file that is gone.
+
 ## 2026-06-20 — CI-state literacy; the CodeRabbit absent-required trap (PR #40)
 
 New governance doc: `docs/CI_AND_LIVE_STATE.md` — the CI-status taxonomy + the

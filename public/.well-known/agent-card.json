@@ -1,7 +1,7 @@
 {
   "name": "coins-hold-and-win-math",
-  "description": "Static A2A discovery card for the deterministic slot-math capabilities of the Coins: Hold & Win play-money demo (no real money, no accounts, no AI/LLM runtime). NO LIVE A2A ENDPOINT YET: this is a phase-A discovery card; the `url` points to the project repository, not a live JSON-RPC A2A endpoint (none exists in phase A). The skills below describe deterministic functions runnable from this repo's source (src/slotmath.js). See STATUS.md and docs/adr/0019-agent-interop-static-surface.md.",
-  "version": "0.1.0",
+  "description": "A2A discovery card for the deterministic slot-math capabilities of the Coins: Hold & Win play-money demo (no real money, no accounts, no AI/LLM runtime). NO LIVE/HOSTED A2A ENDPOINT: the `url` points to the project repository, not a JSON-RPC A2A endpoint (a hosted endpoint is deferred to phase C). The skills below ARE callable locally in phase B via the in-repo stdio MCP server (tools/mcp/server.mjs) wrapping src/slotmath.js — see x-lifecycle.localMcpServer, STATUS.md, and docs/adr/0020-local-stdio-mcp-server.md.",
+  "version": "0.2.0",
   "url": "https://github.com/Lost-secuirty/Demo-math-slot-test-only",
   "documentationUrl": "https://github.com/Lost-secuirty/Demo-math-slot-test-only/blob/main/STATUS.md",
   "capabilities": {
@@ -15,7 +15,7 @@
     {
       "id": "verify-rtp",
       "name": "Verify RTP (exact)",
-      "description": "Compute the exact theoretical return-to-player, house edge, per-line hit frequency, standard deviation, and jackpot odds for the play-money model by full payline enumeration. Deterministic: no RNG, no network. Implemented by theoreticalRtp() / parSheet() in src/slotmath.js.",
+      "description": "Compute the exact theoretical return-to-player, house edge, per-line hit frequency, standard deviation, and jackpot odds for the play-money model by full payline enumeration. Deterministic: no RNG, no network. Implemented by theoreticalRtp() in src/slotmath.js.",
       "tags": ["slot-math", "rtp", "deterministic", "play-money"],
       "inputModes": ["application/json"],
       "outputModes": ["application/json"]
@@ -32,8 +32,14 @@
   "x-lifecycle": {
     "status": "growing",
     "frozen": false,
-    "interopPhase": "A",
+    "interopPhase": "B",
     "liveEndpoint": false,
-    "note": "Growing until explicitly frozen (see STATUS.md). Phase A is a static discovery card only: no live A2A/MCP endpoint and no authentication. A live endpoint plus machine-to-machine auth is deferred (phase B)."
+    "localMcpServer": {
+      "available": true,
+      "transport": "stdio",
+      "entry": "tools/mcp/server.mjs",
+      "note": "Callable locally over MCP stdio only (e.g. `npm run mcp:serve`), in the caller's own process; no network endpoint, no auth, no secrets. A hosted endpoint is deferred to phase C."
+    },
+    "note": "Growing until explicitly frozen (see STATUS.md). Phase B: the MCP tools are callable locally via a stdio server (see localMcpServer); liveEndpoint/streaming/pushNotifications stay false because no HOSTED A2A/MCP-HTTP endpoint exists yet — that, plus machine-to-machine auth, is deferred to phase C."
   }
 }

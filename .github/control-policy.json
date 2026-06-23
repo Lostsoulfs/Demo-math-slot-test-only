@@ -26,9 +26,11 @@
     ".github/dependabot.yml",
     "STATUS.md",
     "docs/adr/0019-agent-interop-static-surface.md",
+    "docs/adr/0020-local-stdio-mcp-server.md",
     "docs/kb/agent-interop.md",
     "public/.well-known/agent-card.json",
     "tools/mcp/tools.json",
+    "tools/mcp/server.mjs",
     "scripts/agent-card-validate.mjs",
     "docs/CI_AND_LIVE_STATE.md"
   ],
